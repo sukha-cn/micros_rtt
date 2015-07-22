@@ -3,12 +3,12 @@
 
 #include "ros/ros.h"
 #include "common.h"
-#include "ros_rtt/publication.h"
-#include "ros_rtt/subscription.h"
-#include "ros_rtt/connection_base.h"
-#include "ros_rtt/oro/connection_factory.hpp"
+#include "hpcl_rtt/publication.h"
+#include "hpcl_rtt/subscription.h"
+#include "hpcl_rtt/connection_base.h"
+#include "hpcl_rtt/oro/connection_factory.hpp"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
 class TopicManager;
 typedef boost::shared_ptr<TopicManager> TopicManagerPtr;

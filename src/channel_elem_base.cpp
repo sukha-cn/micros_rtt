@@ -1,9 +1,9 @@
 
-#include "ros_rtt/oro/channel_data_element.hpp"
-#include "ros_rtt/oro/oro_arch.h"
+#include "hpcl_rtt/oro/channel_data_element.hpp"
+#include "hpcl_rtt/oro/oro_arch.h"
 //#include "../os/MutexLock.hpp"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
 
 ChannelElementBase::ChannelElementBase()

@@ -5,9 +5,9 @@
  * Created on June 3, 2015, 9:59 AM
  */
 
-#include "ros_rtt/subscriber.h"
+#include "hpcl_rtt/subscriber.h"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
  
 Subscriber::Subscriber() 

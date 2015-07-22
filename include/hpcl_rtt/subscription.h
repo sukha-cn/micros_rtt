@@ -5,7 +5,7 @@
 #include "boost/function.hpp"
 #include "connection_base.h"
 
-namespace rosrtt
+namespace hpcl_rtt
 {  
 
 template<class M>

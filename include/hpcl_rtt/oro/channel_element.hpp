@@ -6,7 +6,7 @@
 #include "channel_element_base.hpp"
 #include "../common.h"
 
-namespace rosrtt 
+namespace hpcl_rtt 
 {   
 
 /** A typed version of ChannelElementBase. It defines generic methods that are

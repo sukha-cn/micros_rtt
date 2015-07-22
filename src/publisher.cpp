@@ -1,6 +1,6 @@
-#include "ros_rtt/publisher.h"
+#include "hpcl_rtt/publisher.h"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
 Publisher::Publisher()
 {

@@ -4,7 +4,7 @@
 #include "channel_element.hpp"
 #include "data_lockfree.hpp"
 
-namespace rosrtt 
+namespace hpcl_rtt 
 {    
   
 /** A connection element that stores a single data sample */

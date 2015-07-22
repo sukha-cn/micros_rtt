@@ -4,7 +4,7 @@
 #include "channel_data_element.hpp"
 #include "../subscription.h"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
 /** This is a channel element that represents the output endpoint of a
  * connection, i.e. the part that is connected to the InputPort.

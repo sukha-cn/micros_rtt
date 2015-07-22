@@ -6,7 +6,7 @@
 #include "subscriber.h"
 #include "topic_manager.h"
 
-namespace rosrtt {
+namespace hpcl_rtt {
 
 class NodeHandle
 {

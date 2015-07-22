@@ -1,7 +1,7 @@
-#include "ros_rtt/topic_manager.h"
+#include "hpcl_rtt/topic_manager.h"
 
 
-namespace rosrtt
+namespace hpcl_rtt 
 {
 
 TopicManagerPtr g_topic_manager;

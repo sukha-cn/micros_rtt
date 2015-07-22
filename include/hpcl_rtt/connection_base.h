@@ -1,9 +1,9 @@
 #ifndef ROSRTT_CONNECTION_BASE_H
 #define	ROSRTT_CONNECTION_BASE_H
 
-#include "ros_rtt/oro/channel_element_base.hpp"
+#include "hpcl_rtt/oro/channel_element_base.hpp"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
 class ConnectionBase;
 typedef boost::shared_ptr<ConnectionBase> ConnectionBasePtr;

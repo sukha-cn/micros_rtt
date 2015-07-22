@@ -9,7 +9,7 @@
 //#include <rtt/os/Mutex.hpp>
 //#include "rtt-base-fwd.hpp"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
   
 /** In the data flow implementation, a channel is created by chaining

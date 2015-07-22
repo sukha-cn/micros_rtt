@@ -6,7 +6,7 @@
 #include "conn_output_endpoint.hpp"
 #include "data_lockfree.hpp"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
 
 /** This class provides the basic tools to create channels that represent

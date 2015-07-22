@@ -12,7 +12,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-namespace rosrtt
+namespace hpcl_rtt
 {
 
 enum FlowStatus {NoData = 0, OldData = 1, NewData = 2};

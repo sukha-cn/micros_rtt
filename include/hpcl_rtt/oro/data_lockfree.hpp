@@ -3,7 +3,7 @@
 
 #include "oro_arch.h"
 
-namespace rosrtt
+namespace hpcl_rtt
 {
 template<class T>
 class DataObjectLockFree

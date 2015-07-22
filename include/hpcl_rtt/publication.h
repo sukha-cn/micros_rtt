@@ -3,8 +3,8 @@
 
 #include "oro/channel_data_element.hpp"
 #include "ros/ros.h"
-#include "ros_rtt/connection_base.h"
-namespace rosrtt
+#include "hpcl_rtt/connection_base.h"
+namespace hpcl_rtt
 {
 //class Publication;
 //typedef boost::shared_ptr<Publication> PublicationPtr;
