@@ -24,37 +24,40 @@ public:
   ConnectionBasePtr advertise(const std::string topic, bool is_intraprocess)
   {
     ConnectionBasePtr pub;
-    pub = lookupPublication(topic);
-    if (pub) 
+    if (!is_intraprocess)
     {
-      return pub;
-    }
-  
-    pub.reset(new Publication<M>(topic, is_intraprocess));
-    advertised_topics_.push_back(pub);
- 
-    // check whether we've already subscribed to this topic.
-    bool found = false;
-    ConnectionBasePtr sub;
-    {
-      V_ConnectionBase::iterator s;
-      for (s = subscriptions_.begin(); s != subscriptions_.end() && !found; ++s) 
+      pub = lookupPublication(topic);
+      if (pub) 
       {
-        if ((*s)->getTopic() == topic) 
+        return pub;
+      }
+  
+      pub.reset(new Publication<M>(topic));
+      advertised_topics_.push_back(pub);
+  
+      // check whether we've already subscribed to this topic.
+      bool found = false;
+      ConnectionBasePtr sub;
+      {
+        V_ConnectionBase::iterator s;
+        for (s = subscriptions_.begin(); s != subscriptions_.end() && !found; ++s) 
         {
-          found = true;
-          sub = *s;
-          break;
+          if ((*s)->getTopic() == topic) 
+          {
+            found = true;
+            sub = *s;
+            break;
+          }
         }
       }
+  
+      if (found) 
+      {
+        ConnFactory::createConnection<M>(pub, sub);
+      }
+  
+      return pub;
     }
- 
-    if (found) 
-    {
-      ConnFactory::createConnection<M>(pub, sub);
-    }
- 
-    return pub;
   }
   //template<class M> bool unadvertise(const std::string topic);
 
