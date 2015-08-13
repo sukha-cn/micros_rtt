@@ -5,8 +5,8 @@
  * Created on May 28, 2015, 4:33 PM
  */
 
-#ifndef ROSRTT_COMMON_H
-#define	ROSRTT_COMMON_H
+#ifndef HPCLRTT_COMMON_H
+#define	HPCLRTT_COMMON_H
 
 #include <list>
 #include <vector>

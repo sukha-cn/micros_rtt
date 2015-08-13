@@ -1,5 +1,5 @@
-#ifndef ROSRTT_CONN_OUTPUT_ENDPOINT_HPP
-#define ROSRTT_CONN_OUTPUT_ENDPOINT_HPP
+#ifndef HPCLRTT_CONN_OUTPUT_ENDPOINT_HPP
+#define HPCLRTT_CONN_OUTPUT_ENDPOINT_HPP
 
 #include "channel_data_element.hpp"
 #include "../subscription.h"

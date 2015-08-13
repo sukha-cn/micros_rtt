@@ -1,5 +1,5 @@
-#ifndef ROSRTT_CHANNEL_DATA_ELEMENT_HPP
-#define ROSRTT_CHANNEL_DATA_ELEMENT_HPP
+#ifndef HPCLRTT_CHANNEL_DATA_ELEMENT_HPP
+#define HPCLRTT_CHANNEL_DATA_ELEMENT_HPP
 
 #include "channel_element.hpp"
 #include "data_lockfree.hpp"

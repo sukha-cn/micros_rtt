@@ -1,5 +1,5 @@
-#ifndef ROSRTT_DATA_LOCK_FREE_HPP
-#define ROSRTT_DATA_LOCK_FREE_HPP
+#ifndef HPCLRTT_DATA_LOCK_FREE_HPP
+#define HPCLRTT_DATA_LOCK_FREE_HPP
 
 #include "oro_arch.h"
 

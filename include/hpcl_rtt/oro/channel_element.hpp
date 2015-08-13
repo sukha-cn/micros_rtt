@@ -1,5 +1,5 @@
-#ifndef ROSRTT_CHANNEL_ELEMENT_HPP
-#define ROSRTT_CHANNEL_ELEMENT_HPP
+#ifndef HPCLRTT_CHANNEL_ELEMENT_HPP
+#define HPCLRTT_CHANNEL_ELEMENT_HPP
 
 #include <boost/intrusive_ptr.hpp>
 #include <boost/call_traits.hpp>

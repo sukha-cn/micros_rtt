@@ -5,8 +5,8 @@
  * Created on May 28, 2015, 4:15 PM
  */
 
-#ifndef ROSRTT_SUBSCRIBER_HANDLE_H
-#define	ROSRTT_SUBSCRIBER_HANDLE_H
+#ifndef HPCLRTT_SUBSCRIBER_HANDLE_H
+#define	HPCLRTT_SUBSCRIBER_HANDLE_H
 
 #include "ros/subscriber.h"
 #include "topic_manager.h"

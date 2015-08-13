@@ -1,5 +1,5 @@
-#ifndef ROSRTT_NODE_HANDLE_H
-#define ROSRTT_NODE_HANDLE_H
+#ifndef HPCLRTT_NODE_HANDLE_H
+#define HPCLRTT_NODE_HANDLE_H
 
 #include "ros/node_handle.h"
 #include "publisher.h"
@@ -49,8 +49,7 @@ public:
   Publisher advertise(const std::string& topic, uint32_t queue_size, bool latch = false, bool is_intraprocess = false)
   {
     ros::Publisher ros_pub = ros_nh.advertise<M>(topic, queue_size, latch);
-    ROS_INFO("advertise.");
-    
+
     if (ros_pub) 
     {
       ConnectionBasePtr pub_connection = TopicManager::instance()->advertise<M>(topic, is_intraprocess);

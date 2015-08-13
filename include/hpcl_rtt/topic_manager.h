@@ -1,5 +1,5 @@
-#ifndef ROSRTT_TOPIC_MANAGER_H
-#define ROSRTT_TOPIC_MANAGER_H
+#ifndef HPCLRTT_TOPIC_MANAGER_H
+#define HPCLRTT_TOPIC_MANAGER_H
 
 #include "ros/ros.h"
 #include "common.h"
@@ -27,33 +27,47 @@ public:
     pub = lookupPublication(topic);
     if (pub) 
     {
-      return pub;
+      if (pub->isIntraprocess() == is_intraprocess)
+      {
+        return pub;
+      }
+      else
+      {
+        ROSINFO("topic has been published as the other method.");
+        return NULL;
+      }
     }
   
-    pub.reset(new Publication<M>(topic, is_intraprocess));
+    pub.reset(new IntraPublication<M>(topic));
     advertised_topics_.push_back(pub);
  
     // check whether we've already subscribed to this topic.
-    bool found = false;
-    ConnectionBasePtr sub;
+    if (!is_intraprocess)
     {
-      V_ConnectionBase::iterator s;
-      for (s = subscriptions_.begin(); s != subscriptions_.end() && !found; ++s) 
+      bool found = false;
+      ConnectionBasePtr sub;
       {
-        if ((*s)->getTopic() == topic) 
+        V_ConnectionBase::iterator s;
+        for (s = subscriptions_.begin(); s != subscriptions_.end() && !found; ++s) 
         {
-          found = true;
-          sub = *s;
-          break;
+          if ((*s)->getTopic() == topic) 
+          {
+            found = true;
+            sub = *s;
+            break;
+          }
         }
       }
-    }
  
-    if (found) 
+      if (found) 
+      {
+        ConnFactory::createConnection<M>(pub, sub);
+      }
+    } 
+    else
     {
-      ConnFactory::createConnection<M>(pub, sub);
+      ConnFactory::createStream<M>(pub, topic);
     }
- 
     return pub;
   }
   //template<class M> bool unadvertise(const std::string topic);

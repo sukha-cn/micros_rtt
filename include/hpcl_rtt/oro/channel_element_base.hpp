@@ -1,5 +1,5 @@
-#ifndef ROSRTT_CHANNEL_BASE_HPP
-#define ROSRTT_CHANNEL_BASE_HPP
+#ifndef HPCLRTT_CHANNEL_BASE_HPP
+#define HPCLRTT_CHANNEL_BASE_HPP
 
 #include "oro_arch.h"
 #include <utility>

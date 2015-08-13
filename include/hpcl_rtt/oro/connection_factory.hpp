@@ -1,5 +1,5 @@
-#ifndef ROSRTT_CONN_FACTORY_HPP
-#define ROSRTT_CONN_FACTORY_HPP
+#ifndef HPCLRTT_CONN_FACTORY_HPP
+#define HPCLRTT_CONN_FACTORY_HPP
 
 #include "channel_element.hpp"
 #include "conn_input_endpoint.hpp"
@@ -74,6 +74,14 @@ public:
     return createAndCheckConnection(publication, subscription, channel_input);
   }
 
+  template<class T>
+  static bool createStream(IntraPublication <T>& publication, std::string &topic)
+  {
+    ChannelElementBase::shared_ptr chan = buildChannelInput(publication, base::ChannelElementBase::shared_ptr() );
+    return createAndCheckStream(publication, chan);
+  }
+  
+
 
 protected:
   //template<typename T>
@@ -94,6 +102,47 @@ protected:
     channel_input->disconnect(true);
     return false;
   }
+  template<typename T>
+  static bool createAndCheckStream(IntraPublication <T>& publication, base::ChannelElementBase::shared_ptr chan) 
+  {
+    RTT::base::ChannelElementBase::shared_ptr chan_stream = createMqStream(publication, true);
+              
+    if ( !chan_stream ) {
+      ROSINFO("Transport failed to create remote channel for output stream of port ");
+      return false;
+    }
+    chan->setOutput( chan_stream );
+  
+    if ( output_port.addConnection( new StreamConnID(policy.name_id), chan, policy) ) {
+      ROSINFO("Created output stream for output port ");
+      return true;
+    }
+    // setup failed.
+    ROSINRO("Failed to create output stream for output port ");
+    return false;
+  }  
+
+  template<typename T>
+  ChannelElementBase::shared_ptr createMqStream(IntraPublication <T>& publication, bool is_sender) const
+  {
+    try
+    {
+      ChannelElementBase::shared_ptr mq = new MQChannelElement<T>(port, *this, is_sender);
+      if (!is_sender)
+      {
+      // the receiver needs a buffer to store his messages in.
+        ChannelElementBase::shared_ptr buf = buildDataStorage();
+        mq->setOutput(buf);
+      }
+      return mq;
+    }
+    catch(std::exception& e)
+    {
+      ROSINFO("Failed to create MQueue Channel element: ");
+    }
+    return ChannelElementBase::shared_ptr();
+  } 
+
 };
 
 }

@@ -1,5 +1,5 @@
-#ifndef ROSRTT_SUBSCRIPTION_H
-#define ROSRTT_SUBSCRIPTION_H
+#ifndef HPCLRTT_SUBSCRIPTION_H
+#define HPCLRTT_SUBSCRIPTION_H
 
 #include "oro/channel_data_element.hpp"
 #include "boost/function.hpp"

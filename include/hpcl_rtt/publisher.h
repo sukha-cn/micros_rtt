@@ -1,5 +1,5 @@
-#ifndef ROSRTT_PUBLISHER_HANDLE_H
-#define ROSRTT_PUBLISHER_HANDLE_H
+#ifndef HPCLRTT_PUBLISHER_HANDLE_H
+#define HPCLRTT_PUBLISHER_HANDLE_H
 
 #include "ros/publisher.h"
 #include "topic_manager.h"

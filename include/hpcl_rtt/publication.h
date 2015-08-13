@@ -1,5 +1,5 @@
-#ifndef ROSRTT_PUBLICATION_H
-#define ROSRTT_PUBLICATION_H
+#ifndef HPCLRTT_PUBLICATION_H
+#define HPCLRTT_PUBLICATION_H
 
 #include "oro/channel_data_element.hpp"
 #include "ros/ros.h"
@@ -16,7 +16,7 @@ class Publication : public ConnectionBase
 public:
   typedef boost::shared_ptr< Publication<M> > shared_ptr;
   
-  Publication(const std::string& topic) : ConnectionBase(topic) {}
+  Publication(const std::string& topic) : ConnectionBase(topic, false) {}
   ~Publication() {}
 
   bool publish(M message)
