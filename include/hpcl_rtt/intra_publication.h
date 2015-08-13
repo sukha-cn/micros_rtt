@@ -16,7 +16,7 @@ public:
   bool publish(M message)
   {
   }
-}
+};
 
 }
 

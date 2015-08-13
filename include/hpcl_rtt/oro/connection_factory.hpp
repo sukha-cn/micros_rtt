@@ -1,10 +1,14 @@
 #ifndef HPCLRTT_CONN_FACTORY_HPP
 #define HPCLRTT_CONN_FACTORY_HPP
 
+#include "ros/ros.h"
 #include "channel_element.hpp"
+#include "mqueue/MQChannelElement.hpp"
+#include "../connection_base.h"
 #include "conn_input_endpoint.hpp"
 #include "conn_output_endpoint.hpp"
 #include "data_lockfree.hpp"
+#include "../intra_publication.h"
 
 namespace hpcl_rtt
 {
@@ -77,7 +81,7 @@ public:
   template<class T>
   static bool createStream(IntraPublication <T>& publication, std::string &topic)
   {
-    ChannelElementBase::shared_ptr chan = buildChannelInput(publication, base::ChannelElementBase::shared_ptr() );
+    ChannelElementBase::shared_ptr chan = buildChannelInput(publication, ChannelElementBase::shared_ptr() );
     return createAndCheckStream(publication, chan);
   }
   
@@ -102,23 +106,24 @@ protected:
     channel_input->disconnect(true);
     return false;
   }
+
   template<typename T>
-  static bool createAndCheckStream(IntraPublication <T>& publication, base::ChannelElementBase::shared_ptr chan) 
+  static bool createAndCheckStream(IntraPublication <T>& publication, ChannelElementBase::shared_ptr chan) 
   {
-    RTT::base::ChannelElementBase::shared_ptr chan_stream = createMqStream(publication, true);
+    ChannelElementBase::shared_ptr chan_stream = createMqStream(publication, true);
               
     if ( !chan_stream ) {
-      ROSINFO("Transport failed to create remote channel for output stream of port ");
+      ROS_INFO("Transport failed to create remote channel for output stream of port ");
       return false;
     }
     chan->setOutput( chan_stream );
   
-    if ( output_port.addConnection( new StreamConnID(policy.name_id), chan, policy) ) {
-      ROSINFO("Created output stream for output port ");
+    if ( publication.addConnection(chan) ) {
+      ROS_INFO("Created output stream for output port ");
       return true;
     }
     // setup failed.
-    ROSINRO("Failed to create output stream for output port ");
+    ROS_INFO("Failed to create output stream for output port ");
     return false;
   }  
 
@@ -127,18 +132,18 @@ protected:
   {
     try
     {
-      ChannelElementBase::shared_ptr mq = new MQChannelElement<T>(port, *this, is_sender);
+      ChannelElementBase::shared_ptr mq = new MQChannelElement<T>(publication, *this, is_sender);
       if (!is_sender)
       {
       // the receiver needs a buffer to store his messages in.
-        ChannelElementBase::shared_ptr buf = buildDataStorage();
+        ChannelElementBase::shared_ptr buf = buildDataStorage<T>();
         mq->setOutput(buf);
       }
       return mq;
     }
     catch(std::exception& e)
     {
-      ROSINFO("Failed to create MQueue Channel element: ");
+      ROS_INFO("Failed to create MQueue Channel element: ");
     }
     return ChannelElementBase::shared_ptr();
   } 

@@ -40,8 +40,6 @@
 #define ORO_MQSENDER_HPP_
 
 #include <mqueue.h>
-#include "../../rtt-fwd.hpp"
-#include "../../base/DataSourceBase.hpp"
 
 namespace RTT
 {
@@ -108,7 +106,7 @@ namespace RTT
              */
             MQSendRecv(types::TypeMarshaller const& transport);
 
-            void setupStream(base::DataSourceBase::shared_ptr ds, base::PortInterface* port, ConnPolicy const& policy, bool is_sender);
+            void setupStream(DataSourceBase::shared_ptr ds, PortInterface* port, ConnPolicy const& policy, bool is_sender);
 
             ~MQSendRecv();
 
@@ -119,21 +117,21 @@ namespace RTT
              * data in mqdata_source, or the value set in mdata_size;
              * @param sample
              */
-            virtual void mqNewSample(base::DataSourceBase::shared_ptr ds);
+            virtual void mqNewSample(DataSourceBase::shared_ptr ds);
 
             /**
              * Works only in receive mode, waits for a new sample and
              * adapts the receive buffer to match it's size.
              * @return
              */
-            virtual bool mqReady(base::DataSourceBase::shared_ptr ds, base::ChannelElementBase* chan);
+            virtual bool mqReady(DataSourceBase::shared_ptr ds, ChannelElementBase* chan);
 
             /**
              * Read from the message queue.
              * @param sample stores the resulting data sample.
              * @return true if an item could be read.
              */
-            bool mqRead(base::DataSourceBase::shared_ptr ds);
+            bool mqRead(DataSourceBase::shared_ptr ds);
 
             /**
              * Write to the message queue
@@ -141,7 +139,7 @@ namespace RTT
              * @param is_data_sample true if the sample is used for initialization, false if it is a proper write
              * @return true if it could be sent.
              */
-            bool mqWrite(base::DataSourceBase::shared_ptr ds);
+            bool mqWrite(DataSourceBase::shared_ptr ds);
         };
     }
 }

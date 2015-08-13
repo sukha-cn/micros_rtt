@@ -33,7 +33,7 @@ public:
       }
       else
       {
-        ROSINFO("topic has been published as the other method.");
+        ROS_INFO("topic has been published as the other method.");
         return NULL;
       }
     }
