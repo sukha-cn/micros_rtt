@@ -46,13 +46,13 @@ public:
 
 
   template <class M>
-  Publisher advertise(const std::string& topic, uint32_t queue_size, bool latch = false, bool is_intraprocess = false)
+  Publisher advertise(const std::string& topic, uint32_t queue_size, bool latch = false, bool is_interprocess = false)
   {
     ros::Publisher ros_pub = ros_nh.advertise<M>(topic, queue_size, latch);
 
     if (ros_pub) 
     {
-      ConnectionBasePtr pub_connection = TopicManager::instance()->advertise<M>(topic, is_intraprocess);
+      ConnectionBasePtr pub_connection = TopicManager::instance()->advertise<M>(topic, is_interprocess);
       if (pub_connection)
       {
         ROS_INFO("publish successes.");

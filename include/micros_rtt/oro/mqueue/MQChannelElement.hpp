@@ -28,8 +28,7 @@ namespace hpcl_rtt
         * Create a channel element for remote data exchange.
         * @param transport The type specific object that will be used to marshal the data.
         */
-       MQChannelElement(PortInterface* port, types::TypeMarshaller const& transport,
-                        const ConnPolicy& policy, bool is_sender)
+       MQChannelElement(ConnectionBasePtr connection, bool is_sender)
            : MQSendRecv(transport)
            , read_sample(new ValueDataSource<T>)
            , write_sample(new LateConstReferenceDataSource<T>)

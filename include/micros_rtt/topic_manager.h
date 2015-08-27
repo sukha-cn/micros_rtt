@@ -21,13 +21,13 @@ public:
   static const TopicManagerPtr& instance();
 
   template<class M> 
-  ConnectionBasePtr advertise(const std::string topic, bool is_intraprocess)
+  ConnectionBasePtr advertise(const std::string topic, bool is_interprocess)
   {
     ConnectionBasePtr pub;
     pub = lookupPublication(topic);
     if (pub) 
     {
-      if (pub->isIntraprocess() == is_intraprocess)
+      if (pub->isInterprocess() == is_interprocess)
       {
         return pub;
       }
@@ -38,11 +38,11 @@ public:
       }
     }
   
-    pub.reset(new IntraPublication<M>(topic));
+    pub.reset(new InterPublication<M>(topic));
     advertised_topics_.push_back(pub);
  
     // check whether we've already subscribed to this topic.
-    if (!is_intraprocess)
+    if (!is_interprocess)
     {
       bool found = false;
       ConnectionBasePtr sub;

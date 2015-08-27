@@ -60,16 +60,14 @@ using namespace RTT::detail;
 using namespace RTT::mqueue;
 
 
-MQSendRecv::MQSendRecv(types::TypeMarshaller const& transport) :
-    mtransport(transport), marshaller_cookie(0), buf(0), mis_sender(false), minit_done(false), max_size(0), mdata_size(0)
+MQSendRecv::MQSendRecv() :
+    marshaller_cookie(0), buf(0), mis_sender(false), minit_done(false), max_size(0), mdata_size(0)
 {
 }
 
-void MQSendRecv::setupStream(base::DataSourceBase::shared_ptr ds, base::PortInterface* port, ConnPolicy const& policy,
+void MQSendRecv::setupStream(DataSourceBase::shared_ptr ds, base::PortInterface* port, ConnPolicy const& policy,
                              bool is_sender)
 {
-    Logger::In in("MQSendRecv");
-
     mdata_size = policy.data_size;
     max_size = policy.data_size ? policy.data_size : mtransport.getSampleSize(ds);
     marshaller_cookie = mtransport.createCookie();
