@@ -1,12 +1,12 @@
-#ifndef HPCLRTT_NODE_HANDLE_H
-#define HPCLRTT_NODE_HANDLE_H
+#ifndef MICROSRTT_NODE_HANDLE_H
+#define MICROSRTT_NODE_HANDLE_H
 
 #include "ros/node_handle.h"
 #include "publisher.h"
 #include "subscriber.h"
 #include "topic_manager.h"
 
-namespace hpcl_rtt {
+namespace micros_rtt {
 
 class NodeHandle
 {

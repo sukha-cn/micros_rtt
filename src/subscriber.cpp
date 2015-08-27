@@ -1,13 +1,13 @@
 /* 
  * File:   subscriber.cpp
- * Author: hpcl
+ * Author: sukha-cn
  * 
  * Created on June 3, 2015, 9:59 AM
  */
 
-#include "hpcl_rtt/subscriber.h"
+#include "micros_rtt/subscriber.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
  
 Subscriber::Subscriber() 

@@ -1,11 +1,11 @@
-#ifndef HPCLRTT_MQ_CHANNEL_ELEMENT_H
-#define HPCLRTT_MQ_CHANNEL_ELEMENT_H
+#ifndef MICROSRTT_MQ_CHANNEL_ELEMENT_H
+#define MICROSRTT_MQ_CHANNEL_ELEMENT_H
 
 #include "MQSendRecv.hpp"
 #include "../channel_element.hpp"
 #include <stdexcept>
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
   /**
    * Implements the a ChannelElement using message queues.

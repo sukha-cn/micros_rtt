@@ -1,11 +1,11 @@
-#ifndef HPCLRTT_SUBSCRIPTION_H
-#define HPCLRTT_SUBSCRIPTION_H
+#ifndef MICROSRTT_SUBSCRIPTION_H
+#define MICROSRTT_SUBSCRIPTION_H
 
 #include "oro/channel_data_element.hpp"
 #include "boost/function.hpp"
 #include "connection_base.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {  
 
 template<class M>

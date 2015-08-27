@@ -1,9 +1,9 @@
-#ifndef HPCLRTT_DATA_LOCK_FREE_HPP
-#define HPCLRTT_DATA_LOCK_FREE_HPP
+#ifndef MICROSRTT_DATA_LOCK_FREE_HPP
+#define MICROSRTT_DATA_LOCK_FREE_HPP
 
 #include "oro_arch.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 template<class T>
 class DataObjectLockFree

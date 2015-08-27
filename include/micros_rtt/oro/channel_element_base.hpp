@@ -1,5 +1,5 @@
-#ifndef HPCLRTT_CHANNEL_BASE_HPP
-#define HPCLRTT_CHANNEL_BASE_HPP
+#ifndef MICROSRTT_CHANNEL_BASE_HPP
+#define MICROSRTT_CHANNEL_BASE_HPP
 
 #include "oro_arch.h"
 #include <utility>
@@ -9,7 +9,7 @@
 //#include <rtt/os/Mutex.hpp>
 //#include "rtt-base-fwd.hpp"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
   
 /** In the data flow implementation, a channel is created by chaining

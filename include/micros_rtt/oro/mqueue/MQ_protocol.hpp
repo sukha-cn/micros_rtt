@@ -1,5 +1,5 @@
-#ifndef HPCLRTT_MQ_TEMPATE_PROTOCOL_BASE_HPP
-#define HPCLRTT_MQ_TEMPATE_PROTOCOL_BASE_HPP
+#ifndef MICROSRTT_MQ_TEMPATE_PROTOCOL_BASE_HPP
+#define MICROSRTT_MQ_TEMPATE_PROTOCOL_BASE_HPP
 
 #include "MQLib.hpp"
 #include "../../types/TypeMarshaller.hpp"
@@ -8,7 +8,7 @@
 #include <boost/type_traits/has_virtual_destructor.hpp>
 #include <boost/static_assert.hpp>
 
-namespace RTT
+namespace micros_rtt
 { namespace mqueue
   {
       /**

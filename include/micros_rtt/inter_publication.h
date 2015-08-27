@@ -1,16 +1,16 @@
-#ifndef HPCLRTT_INTER_PUBLICATION_H
-#define HPCLRTT_INTER_PUBLICATION_H
+#ifndef MICROSRTT_INTER_PUBLICATION_H
+#define MICROSRTT_INTER_PUBLICATION_H
 
 #include "ros/ros.h"
-#include "hpcl_rtt/connection_base.h"
+#include "micros_rtt/connection_base.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 template <class M>
 class InterPublication : public ConnectionBase
 {
 public:
-  InterPublication(const std::string& topic) : ConnectionBase(topic, true) {}
+  InterPublication(const std::string& topic) : ConnectionBase(topic, is_interprocess = true) {}
   ~InterPublication() {}
 
   bool publish(M message)

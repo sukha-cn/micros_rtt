@@ -1,5 +1,5 @@
-#ifndef HPCLRTT_CONN_FACTORY_HPP
-#define HPCLRTT_CONN_FACTORY_HPP
+#ifndef MICROSRTT_CONN_FACTORY_HPP
+#define MICROSRTT_CONN_FACTORY_HPP
 
 #include "ros/ros.h"
 #include "channel_element.hpp"
@@ -10,7 +10,7 @@
 #include "data_lockfree.hpp"
 #include "../inter_publication.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 
 /** This class provides the basic tools to create channels that represent

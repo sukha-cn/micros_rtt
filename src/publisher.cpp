@@ -1,6 +1,6 @@
-#include "hpcl_rtt/publisher.h"
+#include "micros_rtt/publisher.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 Publisher::Publisher()
 {

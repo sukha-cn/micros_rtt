@@ -1,7 +1,7 @@
 #include "oro/connection_factory.hpp"
 
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 
 bool ConnFactory::createAndCheckStream(base::OutputPortInterface& output_port, ConnPolicy const& policy, base::ChannelElementBase::shared_ptr chan, StreamConnID* conn_id) {

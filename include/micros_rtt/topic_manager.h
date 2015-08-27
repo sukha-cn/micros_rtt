@@ -1,14 +1,14 @@
-#ifndef HPCLRTT_TOPIC_MANAGER_H
-#define HPCLRTT_TOPIC_MANAGER_H
+#ifndef MICROSRTT_TOPIC_MANAGER_H
+#define MICROSRTT_TOPIC_MANAGER_H
 
 #include "ros/ros.h"
 #include "common.h"
-#include "hpcl_rtt/publication.h"
-#include "hpcl_rtt/subscription.h"
-#include "hpcl_rtt/connection_base.h"
-#include "hpcl_rtt/oro/connection_factory.hpp"
+#include "micros_rtt/publication.h"
+#include "micros_rtt/subscription.h"
+#include "micros_rtt/connection_base.h"
+#include "micros_rtt/oro/connection_factory.hpp"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 class TopicManager;
 typedef boost::shared_ptr<TopicManager> TopicManagerPtr;
@@ -38,12 +38,18 @@ public:
       }
     }
   
-    pub.reset(new InterPublication<M>(topic));
-    advertised_topics_.push_back(pub);
- 
-    // check whether we've already subscribed to this topic.
-    if (!is_interprocess)
+    if (is_interprocess)
     {
+      pub.reset(new InterPublication<M>(topic));
+      advertised_topics_.push_back(pub);
+      ConnFactory::createStream<M>(pub, topic);
+    }
+    else 
+    {
+      pub.reset(new Publication<M>(topic));
+      advertised_topics_.push_back(pub);
+ 
+      // check whether we've already subscribed to this topic.
       bool found = false;
       ConnectionBasePtr sub;
       {
@@ -64,10 +70,6 @@ public:
         ConnFactory::createConnection<M>(pub, sub);
       }
     } 
-    else
-    {
-      ConnFactory::createStream<M>(pub, topic);
-    }
     return pub;
   }
   //template<class M> bool unadvertise(const std::string topic);

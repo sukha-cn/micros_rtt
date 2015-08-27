@@ -1,17 +1,17 @@
 /* 
  * File:   subscriber.h
- * Author: hpcl
+ * Author: sukha-cn
  *
  * Created on May 28, 2015, 4:15 PM
  */
 
-#ifndef HPCLRTT_SUBSCRIBER_HANDLE_H
-#define	HPCLRTT_SUBSCRIBER_HANDLE_H
+#ifndef MICROSRTT_SUBSCRIBER_HANDLE_H
+#define	MICROSRTT_SUBSCRIBER_HANDLE_H
 
 #include "ros/subscriber.h"
 #include "topic_manager.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 
 class Subscriber 

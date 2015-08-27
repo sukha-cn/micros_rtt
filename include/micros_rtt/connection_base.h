@@ -1,9 +1,9 @@
-#ifndef HPCLRTT_CONNECTION_BASE_H
-#define	HPCLRTT_CONNECTION_BASE_H
+#ifndef MICROSRTT_CONNECTION_BASE_H
+#define	MICROSRTT_CONNECTION_BASE_H
 
-#include "hpcl_rtt/oro/channel_element_base.hpp"
+#include "micros_rtt/oro/channel_element_base.hpp"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 class ConnectionBase;
 typedef boost::shared_ptr<ConnectionBase> ConnectionBasePtr;

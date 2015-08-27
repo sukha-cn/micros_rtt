@@ -1,10 +1,10 @@
-#ifndef HPCLRTT_PUBLICATION_H
-#define HPCLRTT_PUBLICATION_H
+#ifndef MICROSRTT_PUBLICATION_H
+#define MICROSRTT_PUBLICATION_H
 
 #include "oro/channel_data_element.hpp"
 #include "ros/ros.h"
-#include "hpcl_rtt/connection_base.h"
-namespace hpcl_rtt
+#include "micros_rtt/connection_base.h"
+namespace micros_rtt
 {
 //class Publication;
 //typedef boost::shared_ptr<Publication> PublicationPtr;

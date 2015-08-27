@@ -1,10 +1,10 @@
-#ifndef HPCLRTT_CONN_INPUT_ENDPOINT_HPP
-#define HPCLRTT_CONN_INPUT_ENDPOINT_HPP
+#ifndef MICROSRTT_CONN_INPUT_ENDPOINT_HPP
+#define MICROSRTT_CONN_INPUT_ENDPOINT_HPP
 
 #include "channel_data_element.hpp"
 #include "../connection_base.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 /** This is a channel element that represents the input endpoint of a
  * connection, i.e. the part that is connected to the OutputPort

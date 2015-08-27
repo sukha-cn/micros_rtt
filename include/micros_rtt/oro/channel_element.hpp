@@ -1,12 +1,12 @@
-#ifndef HPCLRTT_CHANNEL_ELEMENT_HPP
-#define HPCLRTT_CHANNEL_ELEMENT_HPP
+#ifndef MICROSRTT_CHANNEL_ELEMENT_HPP
+#define MICROSRTT_CHANNEL_ELEMENT_HPP
 
 #include <boost/intrusive_ptr.hpp>
 #include <boost/call_traits.hpp>
 #include "channel_element_base.hpp"
 #include "../common.h"
 
-namespace hpcl_rtt 
+namespace micros_rtt 
 {   
 
 /** A typed version of ChannelElementBase. It defines generic methods that are

@@ -1,6 +1,6 @@
-#include "hpcl_rtt/node_handle.h"
+#include "micros_rtt/node_handle.h"
 
-namespace hpcl_rtt
+namespace micros_rtt
 {
 
 NodeHandle::NodeHandle(const std::string& ns, const ros::M_string& remappings)

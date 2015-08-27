@@ -1,7 +1,7 @@
-#include "hpcl_rtt/topic_manager.h"
+#include "micros_rtt/topic_manager.h"
 
 
-namespace hpcl_rtt 
+namespace micros_rtt 
 {
 
 TopicManagerPtr g_topic_manager;
