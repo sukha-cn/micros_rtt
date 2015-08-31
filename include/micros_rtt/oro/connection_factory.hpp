@@ -85,6 +85,13 @@ public:
     return createAndCheckStream(publication, chan);
   }
   
+  template<class T>
+  static bool createStream(InterSubscription <T>& subscription, std::string &topic)
+  {
+    ChannelElementBase::shared_ptr outhalf = buildChannelOutput(subscription);
+    return createAndCheckStream(subscription, outhalf);
+  }
+  
 
 
 protected:
@@ -126,6 +133,29 @@ protected:
     ROS_INFO("Failed to create output stream for output port ");
     return false;
   }  
+  
+  template<typename T>
+  static bool createAndCheckStream(InterSubscription <T>& subscription, ChannelElementBase::shared_ptr outhalf) 
+  {
+    // note: don't refcount this final input chan, because no one will
+    // take a reference to it. It would be destroyed upon return of this function.
+    ChannelElementBase::shared_ptr chan = createStream(subscription, false);
+
+    if ( !chan ) {
+        ROS_INFO("Transport failed to create remote channel for input stream of port ");
+        return false;
+    }
+
+    chan->getOutputEndPoint()->setOutput( outhalf );
+    if ( subscription.channelReady( chan->getOutputEndPoint() ) == true ) {
+        ROS_INFO("Created input stream for input port ");
+        return true;
+    }
+    // setup failed: manual cleanup.
+    chan = 0; // deleted by channelReady() above !
+    ROS_INFO("Failed to create input stream for input port ");
+    return false;
+}
 
   template<typename T>
   ChannelElementBase::shared_ptr createMqStream(ConnectionBasePtr connection, bool is_sender) const

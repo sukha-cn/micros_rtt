@@ -34,8 +34,7 @@ namespace micros_rtt
            , write_sample(new LateConstReferenceDataSource<T>)
 
        {
-           Logger::In in("MQChannelElement");
-           setupStream(read_sample, port, policy, is_sender);
+           setupStream(connection, sizeof(T), is_sender);
        }
 
        ~MQChannelElement() {

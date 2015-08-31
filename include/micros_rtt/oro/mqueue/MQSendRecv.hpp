@@ -36,12 +36,12 @@
  ***************************************************************************/
 
 
-#ifndef ORO_MQSENDER_HPP_
-#define ORO_MQSENDER_HPP_
+#ifndef MICROSRTT_MQSENDER_HPP_
+#define MICROSRTT_MQSENDER_HPP_
 
 #include <mqueue.h>
 
-namespace RTT
+namespace micros_rtt
 {
     namespace mqueue
     {

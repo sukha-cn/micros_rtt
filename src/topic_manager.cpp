@@ -46,5 +46,26 @@ ConnectionBasePtr TopicManager::lookupPublication(const std::string& topic)
 }
 
 
+ConnectionBasePtr TopicManager::lookupSubscription(const std::string& topic)
+{
+  // spin through the subscriptions and see if we find a match. if so, use it.
+  ConnectionBasePtr sub;
+
+  {
+    for (V_ConnectionBase::iterator s = subscriptions_.begin();
+         s != subscriptions_.end() && !found; ++s)
+    {
+      sub = *s;
+      if (sub->getName() == topic)
+      {
+        break;
+      }
+    }
+  }
+
+  return sub;
+}
+
+
 }
 

@@ -66,15 +66,14 @@ public:
 
   template <class M>
   Subscriber subscribe(const std::string &topic, uint32_t queue_size, void(*fp)(M),
-             const ros::TransportHints& transport_hints = ros::TransportHints())
+             const ros::TransportHints& transport_hints = ros::TransportHints(), bool is_interprocess = false)
   {
     // this will lead local messages to be double received, not resolved.
     ros::Subscriber ros_sub = ros_nh.subscribe(topic, queue_size, fp, transport_hints);
-    ROS_INFO("subscribe.");
     if (ros_sub) 
     {
       ROS_INFO("ros subscribe successful.");
-      ConnectionBasePtr sub_connection = TopicManager::instance()->subscribe<M>(topic, fp);
+      ConnectionBasePtr sub_connection = TopicManager::instance()->subscribe<M>(topic, fp, is_interprocess);
       if (sub_connection)
       {
         ROS_INFO("subscribe successes.");

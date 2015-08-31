@@ -46,7 +46,7 @@
 #include <stdexcept>
 #include <errno.h>
 
-#include "MQSendRecv.hpp"
+#include "oro/mqueue/MQSendRecv.hpp"
 #include "../../types/TypeTransporter.hpp"
 #include "../../types/TypeMarshaller.hpp"
 #include "../../Logger.hpp"
@@ -55,9 +55,7 @@
 #include "../../DataFlowInterface.hpp"
 #include "../../TaskContext.hpp"
 
-using namespace RTT;
-using namespace RTT::detail;
-using namespace RTT::mqueue;
+using namespace micros_rtt::mqueue;
 
 
 MQSendRecv::MQSendRecv() :
@@ -65,26 +63,20 @@ MQSendRecv::MQSendRecv() :
 {
 }
 
-void MQSendRecv::setupStream(DataSourceBase::shared_ptr ds, base::PortInterface* port, ConnPolicy const& policy,
+void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
                              bool is_sender)
 {
-    mdata_size = policy.data_size;
-    max_size = policy.data_size ? policy.data_size : mtransport.getSampleSize(ds);
-    marshaller_cookie = mtransport.createCookie();
+    mdata_size = data_size;
+    max_size = data_size;
     mis_sender = is_sender;
 
     std::stringstream namestr;
-    namestr << '/' << port->getInterface()->getOwner()->getName() << '.' << port->getName() << '.' << this << '@' << getpid();
-
-    if (policy.name_id.empty())
-        policy.name_id = namestr.str();
+    namestr << '/' << connection->getTopic() << '.' << this << '@' << getpid();
 
     struct mq_attr mattr;
-    mattr.mq_maxmsg = policy.size ? policy.size : 10;
+    mattr.mq_maxmsg = data_size ? data_size : 10;
     mattr.mq_msgsize = max_size;
     assert( max_size );
-    if (policy.name_id[0] != '/')
-        throw std::runtime_error("Could not open message queue with wrong name. Names must start with '/' and contain no more '/' after the first one.");
     if (max_size <= 0)
         throw std::runtime_error("Could not open message queue with zero message size.");
     int oflag = O_CREAT;
@@ -92,53 +84,51 @@ void MQSendRecv::setupStream(DataSourceBase::shared_ptr ds, base::PortInterface*
         oflag |= O_WRONLY | O_NONBLOCK;
     else
         oflag |= O_RDONLY; //reading is always blocking (see mqReady() )
-    mqdes = mq_open(policy.name_id.c_str(), oflag, S_IREAD | S_IWRITE, &mattr);
+    mqdes = mq_open(namestr.c_str(), oflag, S_IREAD | S_IWRITE, &mattr);
 
     if (mqdes < 0)
     {
-        int the_error = errno;
-        log(Error) << "FAILED opening '" << policy.name_id << "' with message size " << mattr.mq_msgsize << ", buffer size " << mattr.mq_maxmsg << " for "
-                << (is_sender ? "writing :" : "reading :") << endlog();
-        // these are copied from the man page. They are more informative than the plain perrno() text.
-        switch (the_error)
-        {
-        case EACCES:
-            log(Error) << "The queue exists, but the caller does not have permission to open it in the specified mode." << endlog();
-            break;
-        case EINVAL:
-            // or the name is wrong...
-            log(Error) << "Wrong mqueue name given OR, In a process  that  is  unprivileged  (does  not  have  the "
-                    << "CAP_SYS_RESOURCE  capability),  attr->mq_maxmsg  must  be  less than or equal to the msg_max limit, and attr->mq_msgsize must be less than or equal to the msgsize_max limit.  In addition, even in a privileged process, "
-                    << "attr->mq_maxmsg cannot exceed the HARD_MAX limit.  (See mq_overview(7) for details of these limits.)" << endlog();
-            break;
-        case EMFILE:
-            log(Error) << "The process already has the maximum number of files and message queues open." << endlog();
-            break;
-        case ENAMETOOLONG:
-            log(Error) << "Name was too long." << endlog();
-            break;
-        case ENFILE:
-            log(Error) << "The system limit on the total number of open files and message queues has been reached." << endlog();
-            break;
-        case ENOSPC:
-            log(Error)
-                    << "Insufficient space for the creation of a new message queue.  This probably occurred because the queues_max limit was encountered; see mq_overview(7)."
-                    << endlog();
-            break;
-        case ENOMEM:
-            log(Error) << "Insufficient memory." << endlog();
-            break;
-        default:
-            log(Error) << "Submit a bug report. An unexpected mq error occured with errno=" << errno << ": " << strerror(errno) << endlog();
-        }
+//        int the_error = errno;
+//        log(Error) << "FAILED opening '" << policy.name_id << "' with message size " << mattr.mq_msgsize << ", buffer size " << mattr.mq_maxmsg << " for "
+//                << (is_sender ? "writing :" : "reading :") << endlog();
+//        // these are copied from the man page. They are more informative than the plain perrno() text.
+//        switch (the_error)
+//        {
+//        case EACCES:
+//            log(Error) << "The queue exists, but the caller does not have permission to open it in the specified mode." << endlog();
+//            break;
+//        case EINVAL:
+//            // or the name is wrong...
+//            log(Error) << "Wrong mqueue name given OR, In a process  that  is  unprivileged  (does  not  have  the "
+//                    << "CAP_SYS_RESOURCE  capability),  attr->mq_maxmsg  must  be  less than or equal to the msg_max limit, and attr->mq_msgsize must be less than or equal to the msgsize_max limit.  In addition, even in a privileged process, "
+//                    << "attr->mq_maxmsg cannot exceed the HARD_MAX limit.  (See mq_overview(7) for details of these limits.)" << endlog();
+//            break;
+//        case EMFILE:
+//            log(Error) << "The process already has the maximum number of files and message queues open." << endlog();
+//            break;
+//        case ENAMETOOLONG:
+//            log(Error) << "Name was too long." << endlog();
+//            break;
+//        case ENFILE:
+//            log(Error) << "The system limit on the total number of open files and message queues has been reached." << endlog();
+//            break;
+//        case ENOSPC:
+//            log(Error)
+//                    << "Insufficient space for the creation of a new message queue.  This probably occurred because the queues_max limit was encountered; see mq_overview(7)."
+//                    << endlog();
+//            break;
+//        case ENOMEM:
+//            log(Error) << "Insufficient memory." << endlog();
+//            break;
+//        default:
+//            log(Error) << "Submit a bug report. An unexpected mq error occured with errno=" << errno << ": " << strerror(errno) << endlog();
+//        }
         throw std::runtime_error("Could not open message queue: mq_open returned -1.");
     }
 
-    log(Debug) << "Opened '" << policy.name_id << "' with mqdes='" << mqdes << "', msg size='"<<mattr.mq_msgsize<<"' an queue length='"<<mattr.mq_maxmsg<<"' for " << (is_sender ? "writing." : "reading.") << endlog();
-
     buf = new char[max_size];
     memset(buf, 0, max_size); // necessary to trick valgrind
-    mqname = policy.name_id;
+    mqname = namestr;
 }
 
 MQSendRecv::~MQSendRecv()
