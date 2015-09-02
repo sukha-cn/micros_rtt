@@ -20,16 +20,19 @@ private:
   ChannelElementBase::shared_ptr channel_element;
 
 public:
-  ConnectionBase(std::string topic, bool is_interprocess) : topic_(topic), is_interprocess_(is_interprocess) {}
-  ~ConnectionBase() {};
+  ConnectionBase() {}
+  ConnectionBase(std::string topic, bool is_interprocess = false) : topic_(topic), is_interprocess_(is_interprocess) {}
+  ~ConnectionBase() {}
   
   std::string getTopic() {return topic_;}
   
   ChannelElementBase::shared_ptr getChannelElement() {return channel_element;}
   
-  bool addConnection(ChannelElementBase::shared_ptr channel) {channel_element = channel;};
+  bool addConnection(ChannelElementBase::shared_ptr channel) {channel_element = channel;}
   
   bool isInterprocess() {return is_interprocess_;}
+
+  virtual bool channelReady(ChannelElementBase::shared_ptr channel){}
 };
 
 }

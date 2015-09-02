@@ -4,11 +4,12 @@
 #include "ros/ros.h"
 #include "channel_element.hpp"
 #include "mqueue/MQChannelElement.hpp"
-#include "../connection_base.h"
+#include "../connection_base.hpp"
 #include "conn_input_endpoint.hpp"
 #include "conn_output_endpoint.hpp"
 #include "data_lockfree.hpp"
 #include "../inter_publication.h"
+#include "../inter_subscription.h"
 
 namespace micros_rtt
 {
@@ -79,20 +80,19 @@ public:
   }
 
   template<class T>
-  static bool createStream(InterPublication <T>& publication, std::string &topic)
+  static bool createStream(ConnectionBasePtr connection, const std::string &topic, bool is_sender)
   {
-    ChannelElementBase::shared_ptr chan = buildChannelInput(publication, ChannelElementBase::shared_ptr() );
-    return createAndCheckStream(publication, chan);
+	if (is_sender)
+	{
+      ChannelElementBase::shared_ptr chan = buildChannelInput<T>(connection, ChannelElementBase::shared_ptr() );
+      return createAndCheckStream<T>(connection, chan, is_sender);
+	}
+	else
+	{
+	  ChannelElementBase::shared_ptr outhalf = buildChannelOutput<T>(connection);
+      return createAndCheckStream<T>(connection, outhalf, is_sender);
+	}
   }
-  
-  template<class T>
-  static bool createStream(InterSubscription <T>& subscription, std::string &topic)
-  {
-    ChannelElementBase::shared_ptr outhalf = buildChannelOutput(subscription);
-    return createAndCheckStream(subscription, outhalf);
-  }
-  
-
 
 protected:
   //template<typename T>
@@ -115,50 +115,52 @@ protected:
   }
 
   template<typename T>
-  static bool createAndCheckStream(InterPublication <T>& publication, ChannelElementBase::shared_ptr chan) 
+  static bool createAndCheckStream(ConnectionBasePtr connection, ChannelElementBase::shared_ptr chan, bool is_sender) 
   {
-    ChannelElementBase::shared_ptr chan_stream = createMqStream(publication, true);
-              
-    if ( !chan_stream ) {
-      ROS_INFO("Transport failed to create remote channel for output stream of port ");
-      return false;
-    }
-    chan->setOutput( chan_stream );
+	if (is_sender)
+	{
+      ChannelElementBase::shared_ptr chan_stream = createMqStream<T>(connection, true);
+                
+      if ( !chan_stream ) {
+        ROS_INFO("Transport failed to create remote channel for output stream of port ");
+        return false;
+      }
+      chan->setOutput( chan_stream );
   
-    if ( publication.addConnection(chan) ) {
-      ROS_INFO("Created output stream for output port ");
-      return true;
-    }
-    // setup failed.
-    ROS_INFO("Failed to create output stream for output port ");
-    return false;
+      if ( connection->addConnection(chan) ) {
+        ROS_INFO("Created output stream for output port ");
+        return true;
+      }
+      // setup failed.
+      ROS_INFO("Failed to create output stream for output port ");
+      return false;
+	}
+	else
+	{
+      // note: don't refcount this final input chan, because no one will
+      // take a reference to it. It would be destroyed upon return of this function.
+      ChannelElementBase::shared_ptr chan_stream = createMqStream<T>(connection, false);
+	  
+      if ( !chan_stream ) {
+          ROS_INFO("Transport failed to create remote channel for input stream of port ");
+          return false;
+      }
+  
+      chan_stream->getOutputEndPoint()->setOutput( chan );
+      if ( connection->channelReady( chan_stream->getOutputEndPoint() ) == true ) {
+          ROS_INFO("Created input stream for input port ");
+          return true;
+      }
+      // setup failed: manual cleanup.
+      chan_stream = 0; // deleted by channelReady() above !
+      ROS_INFO("Failed to create input stream for input port ");
+      return false;
+	}
   }  
   
-  template<typename T>
-  static bool createAndCheckStream(InterSubscription <T>& subscription, ChannelElementBase::shared_ptr outhalf) 
-  {
-    // note: don't refcount this final input chan, because no one will
-    // take a reference to it. It would be destroyed upon return of this function.
-    ChannelElementBase::shared_ptr chan = createStream(subscription, false);
-
-    if ( !chan ) {
-        ROS_INFO("Transport failed to create remote channel for input stream of port ");
-        return false;
-    }
-
-    chan->getOutputEndPoint()->setOutput( outhalf );
-    if ( subscription.channelReady( chan->getOutputEndPoint() ) == true ) {
-        ROS_INFO("Created input stream for input port ");
-        return true;
-    }
-    // setup failed: manual cleanup.
-    chan = 0; // deleted by channelReady() above !
-    ROS_INFO("Failed to create input stream for input port ");
-    return false;
-}
 
   template<typename T>
-  ChannelElementBase::shared_ptr createMqStream(ConnectionBasePtr connection, bool is_sender) const
+  static ChannelElementBase::shared_ptr createMqStream(ConnectionBasePtr connection, bool is_sender) 
   {
     try
     {

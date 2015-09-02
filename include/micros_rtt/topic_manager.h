@@ -5,7 +5,7 @@
 #include "common.h"
 #include "micros_rtt/publication.h"
 #include "micros_rtt/subscription.h"
-#include "micros_rtt/connection_base.h"
+#include "micros_rtt/connection_base.hpp"
 #include "micros_rtt/oro/connection_factory.hpp"
 
 namespace micros_rtt
@@ -34,7 +34,7 @@ public:
       else
       {
         ROS_INFO("topic has been published as the other method.");
-        return NULL;
+        return pub;
       }
     }
   
@@ -42,7 +42,7 @@ public:
     {
       pub.reset(new InterPublication<M>(topic));
       advertised_topics_.push_back(pub);
-      ConnFactory::createStream<M>(pub, topic);
+      ConnFactory::createStream<M>(pub, topic, true);
     }
     else 
     {
@@ -78,7 +78,7 @@ public:
   ConnectionBasePtr subscribe(const std::string& topic, void(*fp)(M), bool is_interprocess = false)
   {
     boost::function<void(M)> callback = fp;
-    boost::shared_ptr< Subscription<M> > s = lookupSubscription(topic);
+    ConnectionBasePtr s = lookupSubscription(topic);
     if (s)
     {
       return s;
@@ -87,7 +87,7 @@ public:
     if (is_interprocess)
     {
       s.reset(new InterSubscription<M>(topic, callback));
-      ConnFactory::createStream<M>(s, topic);
+      ConnFactory::createStream<M>(s, topic, false);
     }
     else 
     {

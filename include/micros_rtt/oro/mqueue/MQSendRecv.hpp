@@ -40,11 +40,11 @@
 #define MICROSRTT_MQSENDER_HPP_
 
 #include <mqueue.h>
+#include "micros_rtt/connection_base.hpp"
+#include "micros_rtt/oro/channel_element.hpp"
 
 namespace micros_rtt
 {
-    namespace mqueue
-    {
         /**
          * Implements the sending/receiving of mqueue messages.
          * It can only be OR sender OR receiver (logical XOR).
@@ -56,7 +56,7 @@ namespace micros_rtt
              * Transport marshaller used for size calculations
              * and data updates.
              */
-            types::TypeMarshaller const& mtransport;
+            //types::TypeMarshaller const& mtransport;
             /**
              * A private blob that is returned by mtransport.getCookie(). It is
              * used by the marshallers if they need private internal data to do
@@ -104,9 +104,9 @@ namespace micros_rtt
              * Create a channel element for remote data exchange.
              * @param transport The type specific object that will be used to marshal the data.
              */
-            MQSendRecv(types::TypeMarshaller const& transport);
+            MQSendRecv();
 
-            void setupStream(DataSourceBase::shared_ptr ds, PortInterface* port, ConnPolicy const& policy, bool is_sender);
+            void setupStream(ConnectionBasePtr connection, int size, bool is_sender);
 
             ~MQSendRecv();
 
@@ -117,21 +117,21 @@ namespace micros_rtt
              * data in mqdata_source, or the value set in mdata_size;
              * @param sample
              */
-            virtual void mqNewSample(DataSourceBase::shared_ptr ds);
+            virtual void mqNewSample(int size);
 
             /**
              * Works only in receive mode, waits for a new sample and
              * adapts the receive buffer to match it's size.
              * @return
              */
-            virtual bool mqReady(DataSourceBase::shared_ptr ds, ChannelElementBase* chan);
+            virtual bool mqReady(ChannelElementBase* chan);
 
             /**
              * Read from the message queue.
              * @param sample stores the resulting data sample.
              * @return true if an item could be read.
              */
-            bool mqRead(DataSourceBase::shared_ptr ds);
+            bool mqRead();
 
             /**
              * Write to the message queue
@@ -139,9 +139,8 @@ namespace micros_rtt
              * @param is_data_sample true if the sample is used for initialization, false if it is a proper write
              * @return true if it could be sent.
              */
-            bool mqWrite(DataSourceBase::shared_ptr ds);
+            bool mqWrite();
         };
-    }
 }
 
 #endif /* ORO_MQSENDER_HPP_ */

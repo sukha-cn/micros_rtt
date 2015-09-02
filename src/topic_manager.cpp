@@ -53,10 +53,10 @@ ConnectionBasePtr TopicManager::lookupSubscription(const std::string& topic)
 
   {
     for (V_ConnectionBase::iterator s = subscriptions_.begin();
-         s != subscriptions_.end() && !found; ++s)
+         s != subscriptions_.end(); ++s)
     {
       sub = *s;
-      if (sub->getName() == topic)
+      if (sub->getTopic() == topic)
       {
         break;
       }

@@ -2,7 +2,7 @@
 #define MICROSRTT_INTER_SUBSCRIPTION_H
 
 #include "ros/ros.h"
-#include "micros_rtt/connection_base.h"
+#include "micros_rtt/connection_base.hpp"
 
 namespace micros_rtt
 {
@@ -10,7 +10,7 @@ template <class M>
 class InterSubscription : public ConnectionBase
 {
 public:
-  InterSubscription(const std::string& topic, boost::function<void(M)> fp) : ConnectionBase(topic)
+  InterSubscription(const std::string& topic, boost::function<void(M)> fp) : ConnectionBase(topic, true)
   {
     callback = fp;
   }
@@ -33,10 +33,10 @@ public:
   bool call()
   {
   }
-};
 
 private:
   boost::function<void(M)> callback;
+};
 
 }
 

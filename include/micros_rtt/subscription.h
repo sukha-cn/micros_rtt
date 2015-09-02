@@ -3,7 +3,7 @@
 
 #include "oro/channel_data_element.hpp"
 #include "boost/function.hpp"
-#include "connection_base.h"
+#include "connection_base.hpp"
 
 namespace micros_rtt
 {  

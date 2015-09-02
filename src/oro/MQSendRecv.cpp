@@ -46,16 +46,13 @@
 #include <stdexcept>
 #include <errno.h>
 
-#include "oro/mqueue/MQSendRecv.hpp"
-#include "../../types/TypeTransporter.hpp"
-#include "../../types/TypeMarshaller.hpp"
-#include "../../Logger.hpp"
-#include "Dispatcher.hpp"
-#include "../../base/PortInterface.hpp"
-#include "../../DataFlowInterface.hpp"
-#include "../../TaskContext.hpp"
+#include "common.h"
+#include "micros_rtt/oro/mqueue/MQSendRecv.hpp"
+#include "micros_rtt/oro/Time.hpp"
 
-using namespace micros_rtt::mqueue;
+
+namespace micros_rtt
+{
 
 
 MQSendRecv::MQSendRecv() :
@@ -84,7 +81,7 @@ void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
         oflag |= O_WRONLY | O_NONBLOCK;
     else
         oflag |= O_RDONLY; //reading is always blocking (see mqReady() )
-    mqdes = mq_open(namestr.c_str(), oflag, S_IREAD | S_IWRITE, &mattr);
+    mqdes = mq_open(namestr.str().c_str(), oflag, S_IREAD | S_IWRITE, &mattr);
 
     if (mqdes < 0)
     {
@@ -128,7 +125,7 @@ void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
 
     buf = new char[max_size];
     memset(buf, 0, max_size); // necessary to trick valgrind
-    mqname = namestr;
+    mqname = namestr.str();
 }
 
 MQSendRecv::~MQSendRecv()
@@ -137,13 +134,14 @@ MQSendRecv::~MQSendRecv()
         mq_close(mqdes);
 }
 
+
 void MQSendRecv::cleanupStream()
 {
     if (!mis_sender)
     {
         if (minit_done)
         {
-            Dispatcher::Instance()->removeQueue(mqdes);
+//            Dispatcher::Instance()->removeQueue(mqdes);
             minit_done = false;
         }
     }
@@ -155,8 +153,8 @@ void MQSendRecv::cleanupStream()
     // both sender and receiver close their end.
     mq_close( mqdes);
 
-    if (marshaller_cookie)
-        mtransport.deleteCookie(marshaller_cookie);
+//    if (marshaller_cookie)
+//        mtransport.deleteCookie(marshaller_cookie);
 
     if (buf)
     {
@@ -166,17 +164,17 @@ void MQSendRecv::cleanupStream()
 }
 
 
-void MQSendRecv::mqNewSample(RTT::base::DataSourceBase::shared_ptr ds)
+void MQSendRecv::mqNewSample(int size)
 {
     // only deduce if user did not specify it explicitly:
     if (mdata_size == 0)
-        max_size = mtransport.getSampleSize(ds);
+        max_size = size;
     delete[] buf;
     buf = new char[max_size];
     memset(buf, 0, max_size); // necessary to trick valgrind
 }
 
-bool MQSendRecv::mqReady(base::DataSourceBase::shared_ptr ds, base::ChannelElementBase* chan)
+bool MQSendRecv::mqReady(ChannelElementBase* chan)
 {
     if (minit_done)
         return true;
@@ -196,22 +194,24 @@ bool MQSendRecv::mqReady(base::DataSourceBase::shared_ptr ds, base::ChannelEleme
         ssize_t ret = mq_timedreceive(mqdes, buf, max_size, 0, &abs_timeout);
         if (ret != -1)
         {
-            if (mtransport.updateFromBlob((void*) buf, ret, ds, marshaller_cookie))
-            {
-                minit_done = true;
+			if(true)
+			{
+				return true;
+			}
+            //if (mtransport.updateFromBlob((void*) buf, ret, ds, marshaller_cookie))
+            //{
+             //   minit_done = true;
                 // ok, now we can add the dispatcher.
-                Dispatcher::Instance()->addQueue(mqdes, chan);
-                return true;
-            }
+              //  Dispatcher::Instance()->addQueue(mqdes, chan);
+            //    return true;
+           // }
             else
             {
-                log(Error) << "Failed to initialize MQ Channel Element with initial data sample." << endlog();
                 return false;
             }
         }
         else
         {
-            log(Error) << "Failed to receive initial data sample for MQ Channel Element: " << strerror(errno) << endlog();
             return false;
         }
     }
@@ -224,7 +224,7 @@ bool MQSendRecv::mqReady(base::DataSourceBase::shared_ptr ds, base::ChannelEleme
 }
 
 
-bool MQSendRecv::mqRead(RTT::base::DataSourceBase::shared_ptr ds)
+bool MQSendRecv::mqRead()
 {
     int bytes = 0;
     if ((bytes = mq_receive(mqdes, buf, max_size, 0)) == -1)
@@ -232,31 +232,33 @@ bool MQSendRecv::mqRead(RTT::base::DataSourceBase::shared_ptr ds)
         //log(Debug) << "Tried read on empty mq!" <<endlog();
         return false;
     }
-    if (mtransport.updateFromBlob((void*) buf, bytes, ds, marshaller_cookie))
-    {
-        return true;
-    }
+//    if (mtransport.updateFromBlob((void*) buf, bytes, ds, marshaller_cookie))
+//    {
+//        return true;
+//    }
     return false;
 }
 
-bool MQSendRecv::mqWrite(RTT::base::DataSourceBase::shared_ptr ds)
+bool MQSendRecv::mqWrite()
 {
-    std::pair<void const*, int> blob = mtransport.fillBlob(ds, buf, max_size, marshaller_cookie);
-    if (blob.first == 0)
-    {
-        log(Error) << "MQChannel: failed to marshal sample" << endlog();
-        return false;
-    }
+//    std::pair<void const*, int> blob = mtransport.fillBlob(ds, buf, max_size, marshaller_cookie);
+//    if (blob.first == 0)
+//    {
+//        log(Error) << "MQChannel: failed to marshal sample" << endlog();
+//        return false;
+//    }
 
-    char* lbuf = (char*) blob.first;
-    if (mq_send(mqdes, lbuf, blob.second, 0) == -1)
+    char* lbuf;
+	//= (char*) blob.first;
+    if (mq_send(mqdes, lbuf, max_size, 0) == -1)
     {
         if (errno == EAGAIN)
             return true;
 
-        log(Error) << "MQChannel "<< mqdes << " became invalid (mq length="<<max_size<<", msg length="<<blob.second<<"): " << strerror(errno) << endlog();
+//        log(Error) << "MQChannel "<< mqdes << " became invalid (mq length="<<max_size<<", msg length="<<blob.second<<"): " << strerror(errno) << endlog();
         return false;
     }
     return true;
 }
 
+}

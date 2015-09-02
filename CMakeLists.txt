@@ -99,10 +99,11 @@ include_directories(
 ## Declare a cpp library
 add_library(micros_rtt
   src/node_handle.cpp
-  src/channel_elem_base.cpp
+  src/oro/channel_elem_base.cpp
   src/publisher.cpp
   src/subscriber.cpp
   src/topic_manager.cpp
+  src/oro/MQSendRecv.cpp
 )
 
 ## Declare a cpp executable

@@ -3,7 +3,7 @@
 
 #include "oro/channel_data_element.hpp"
 #include "ros/ros.h"
-#include "micros_rtt/connection_base.h"
+#include "micros_rtt/connection_base.hpp"
 namespace micros_rtt
 {
 //class Publication;

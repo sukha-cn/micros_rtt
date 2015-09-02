@@ -19,9 +19,9 @@ namespace micros_rtt
   class MQChannelElement: public ChannelElement<T>, public MQSendRecv
   {
     /** Used as a temporary on the reading side */
-    typename ValueDataSource<T>::shared_ptr read_sample;
+//    typename ValueDataSource<T>::shared_ptr read_sample;
     /** Used in write() to refer to the sample that needs to be written */
-    typename LateConstReferenceDataSource<T>::shared_ptr write_sample;
+//    typename LateConstReferenceDataSource<T>::shared_ptr write_sample;
 
   public:
        /**
@@ -29,9 +29,9 @@ namespace micros_rtt
         * @param transport The type specific object that will be used to marshal the data.
         */
        MQChannelElement(ConnectionBasePtr connection, bool is_sender)
-           : MQSendRecv(transport)
-           , read_sample(new ValueDataSource<T>)
-           , write_sample(new LateConstReferenceDataSource<T>)
+           : MQSendRecv()
+//           , read_sample(new ValueDataSource<T>)
+//           , write_sample(new LateConstReferenceDataSource<T>)
 
        {
            setupStream(connection, sizeof(T), is_sender);
@@ -42,11 +42,11 @@ namespace micros_rtt
        }
 
        virtual bool inputReady() {
-           if ( mqReady(read_sample, this) ) {
+           if ( mqReady(this) ) {
                typename ChannelElement<T>::shared_ptr output =
                    this->getOutput();
                assert(output);
-               output->data_sample(read_sample->rvalue());
+ //              output->data_sample(read_sample->rvalue());
                return true;
            }
            return false;
@@ -59,10 +59,10 @@ namespace micros_rtt
                typename ChannelElement<T>::shared_ptr output =
                    this->getOutput();
 
-               write_sample->setPointer(&sample);
+  //             write_sample->setPointer(&sample);
                // update MQSendRecv buffer:
-               mqNewSample(write_sample);
-               return mqWrite(write_sample);
+  //             mqNewSample(write_sample);
+  //             return mqWrite(write_sample);
            }
            return false;
        }
@@ -92,13 +92,14 @@ namespace micros_rtt
                // 'data available in a data element'.
                typename ChannelElement<T>::shared_ptr input =
                    this->getInput();
-               if( input && input->read(read_sample->set(), false) == NewData )
-                   return this->write(read_sample->rvalue());
+//               if( input && input->read(read_sample->set(), false) == NewData )
+//                   return this->write(read_sample->rvalue());
            } else {
                typename ChannelElement<T>::shared_ptr output =
                    this->getOutput();
-               if (output && mqRead(read_sample))
-                   return output->write(read_sample->rvalue());
+               if (output && mqRead())
+//                   return output->write(read_sample->rvalue());
+				   ;
            }
            return false;
        }
@@ -120,12 +121,12 @@ namespace micros_rtt
         */
        bool write(typename ChannelElement<T>::param_t sample)
        {
-           write_sample->setPointer(&sample);
-           return mqWrite(write_sample);
+//           write_sample->setPointer(&sample);
+           return mqWrite();
        }
 
    };
- }
+ 
 }
 
 #endif

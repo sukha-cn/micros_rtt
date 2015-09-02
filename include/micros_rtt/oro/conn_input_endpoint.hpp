@@ -2,7 +2,7 @@
 #define MICROSRTT_CONN_INPUT_ENDPOINT_HPP
 
 #include "channel_data_element.hpp"
-#include "../connection_base.h"
+#include "../connection_base.hpp"
 
 namespace micros_rtt
 {
