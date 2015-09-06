@@ -181,44 +181,45 @@ bool MQSendRecv::mqReady(ChannelElementBase* chan)
 
     if (!mis_sender)
     {
-        // Try to get the initial sample
-        //
-        // The output port implementation guarantees that there will be one
-        // after the connection is ready
-        struct timespec abs_timeout;
-        clock_gettime(CLOCK_REALTIME, &abs_timeout);
-        abs_timeout.tv_nsec += Seconds_to_nsecs(0.5);
-        abs_timeout.tv_sec += abs_timeout.tv_nsec / (1000*1000*1000);
-        abs_timeout.tv_nsec = abs_timeout.tv_nsec % (1000*1000*1000);
-        //abs_timeout.tv_sec +=1;
-        ssize_t ret = mq_timedreceive(mqdes, buf, max_size, 0, &abs_timeout);
-        if (ret != -1)
-        {
-			if(true)
-			{
-				return true;
-			}
-            //if (mtransport.updateFromBlob((void*) buf, ret, ds, marshaller_cookie))
-            //{
-             //   minit_done = true;
-                // ok, now we can add the dispatcher.
-              //  Dispatcher::Instance()->addQueue(mqdes, chan);
-            //    return true;
-           // }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
+      return true;
+      // Try to get the initial sample
+      //
+      // The output port implementation guarantees that there will be one
+      // after the connection is ready
+      struct timespec abs_timeout;
+      clock_gettime(CLOCK_REALTIME, &abs_timeout);
+      abs_timeout.tv_nsec += Seconds_to_nsecs(0.5);
+      abs_timeout.tv_sec += abs_timeout.tv_nsec / (1000*1000*1000);
+      abs_timeout.tv_nsec = abs_timeout.tv_nsec % (1000*1000*1000);
+      //abs_timeout.tv_sec +=1;
+      ssize_t ret = mq_timedreceive(mqdes, buf, max_size, 0, &abs_timeout);
+      if (ret != -1)
+      {
+    		if(true)
+    		{
+    			return true;
+    		}
+          //if (mtransport.updateFromBlob((void*) buf, ret, ds, marshaller_cookie))
+          //{
+           //   minit_done = true;
+              // ok, now we can add the dispatcher.
+            //  Dispatcher::Instance()->addQueue(mqdes, chan);
+          //    return true;
+         // }
+          else
+          {
             return false;
-        }
+          }
+      }
+      else
+      {
+        return false;
+      }
     }
     else
     {
-        assert( !mis_sender ); // we must be receiver. we can only receive inputReady when we're on the input port side of the MQ.
-        return false;
+      assert( !mis_sender ); // we must be receiver. we can only receive inputReady when we're on the input port side of the MQ.
+      return false;
     }
     return true;
 }
@@ -229,8 +230,8 @@ bool MQSendRecv::mqRead()
     int bytes = 0;
     if ((bytes = mq_receive(mqdes, buf, max_size, 0)) == -1)
     {
-        //log(Debug) << "Tried read on empty mq!" <<endlog();
-        return false;
+      //log(Debug) << "Tried read on empty mq!" <<endlog();
+      return false;
     }
 //    if (mtransport.updateFromBlob((void*) buf, bytes, ds, marshaller_cookie))
 //    {
