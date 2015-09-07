@@ -67,9 +67,9 @@ public:
         read_ptr(0),
         write_ptr(0)
   {
-  	data = new DataBuf[BUF_LEN];
-  	read_ptr = &data[0];
-  	write_ptr = &data[1];
+    data = new DataBuf[BUF_LEN];
+    read_ptr = &data[0];
+    write_ptr = &data[1];
     data_sample(initial_value);
   }
 

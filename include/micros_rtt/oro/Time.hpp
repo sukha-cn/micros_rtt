@@ -6,7 +6,7 @@
 namespace micros_rtt
 {
 
-	/**
+  /**
      * Seconds are stored as a double precision float.
      */
     typedef double Seconds;

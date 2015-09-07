@@ -59,7 +59,7 @@ namespace RTT
          */
         class RTT_API TypeTransporter
         {
-		public:
+        public:
             virtual ~TypeTransporter() {}
 
             /**

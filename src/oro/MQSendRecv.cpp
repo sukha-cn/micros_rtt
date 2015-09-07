@@ -126,6 +126,8 @@ void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
     buf = new char[max_size];
     memset(buf, 0, max_size); // necessary to trick valgrind
     mqname = namestr.str();
+    
+    ROS_INFO("Mqueue open name %s", mqname);
 }
 
 MQSendRecv::~MQSendRecv()
@@ -195,10 +197,10 @@ bool MQSendRecv::mqReady(ChannelElementBase* chan)
       ssize_t ret = mq_timedreceive(mqdes, buf, max_size, 0, &abs_timeout);
       if (ret != -1)
       {
-    		if(true)
-    		{
-    			return true;
-    		}
+        if(true)
+        {
+          return true;
+        }
           //if (mtransport.updateFromBlob((void*) buf, ret, ds, marshaller_cookie))
           //{
            //   minit_done = true;
@@ -250,7 +252,7 @@ bool MQSendRecv::mqWrite()
 //    }
 
     char* lbuf;
-	//= (char*) blob.first;
+    //= (char*) blob.first;
     if (mq_send(mqdes, lbuf, max_size, 0) == -1)
     {
         if (errno == EAGAIN)

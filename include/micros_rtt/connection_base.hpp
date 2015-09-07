@@ -1,5 +1,5 @@
 #ifndef MICROSRTT_CONNECTION_BASE_H
-#define	MICROSRTT_CONNECTION_BASE_H
+#define MICROSRTT_CONNECTION_BASE_H
 
 #include "micros_rtt/oro/channel_element_base.hpp"
 

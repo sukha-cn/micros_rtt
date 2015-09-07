@@ -99,7 +99,7 @@ namespace micros_rtt
                    this->getOutput();
                if (output && mqRead())
 //                   return output->write(read_sample->rvalue());
-				   ;
+               ;
            }
            return false;
        }

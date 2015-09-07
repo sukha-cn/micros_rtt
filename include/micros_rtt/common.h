@@ -6,7 +6,7 @@
  */
 
 #ifndef MICROSRTT_COMMON_H
-#define	MICROSRTT_COMMON_H
+#define MICROSRTT_COMMON_H
 
 #include <list>
 #include <vector>
@@ -19,5 +19,5 @@ enum FlowStatus {NoData = 0, OldData = 1, NewData = 2};
  
 }
 
-#endif	/* COMMON_H */
+#endif  /* COMMON_H */
 

@@ -6,7 +6,7 @@
  */
 
 #ifndef MICROSRTT_SUBSCRIBER_HANDLE_H
-#define	MICROSRTT_SUBSCRIBER_HANDLE_H
+#define MICROSRTT_SUBSCRIBER_HANDLE_H
 
 #include "ros/subscriber.h"
 #include "topic_manager.h"
@@ -38,5 +38,5 @@ private:
 }
 
 
-#endif	/* SUBSCRIBER_H */
+#endif /* SUBSCRIBER_H */
 

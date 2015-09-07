@@ -81,11 +81,13 @@ public:
     ConnectionBasePtr s = lookupSubscription(topic);
     if (s)
     {
+      ROS_INFO("topic manager found topic.");
       return s;
     }
     
     if (is_interprocess)
     {
+      ROS_INFO("topic manager creating inter subscription.");
       s.reset(new InterSubscription<M>(topic, callback));
       ConnFactory::createStream<M>(s, topic, false);
     }
