@@ -111,7 +111,10 @@ namespace micros_rtt
         */
        FlowStatus read(typename ChannelElement<T>::reference_t sample, bool copy_old_data)
        {
-           throw std::runtime_error("not implemented");
+		   ROS_INFO("mqchannel read");
+		   if (mqRead())
+			   return NewData;
+		   return NoData;
        }
 
        /**
@@ -122,6 +125,7 @@ namespace micros_rtt
        bool write(typename ChannelElement<T>::param_t sample)
        {
 //           write_sample->setPointer(&sample);
+		   setSBuf((char *)&sample);			   
            return mqWrite();
        }
 

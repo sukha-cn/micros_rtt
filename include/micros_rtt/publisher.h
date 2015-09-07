@@ -21,10 +21,11 @@ public:
     //ROS_INFO("finding pub %s.", topic_.c_str());
     if (publication)
     {
-      //ROS_INFO("publishing topic %s.", pub->getTopic ().c_str ());
+      ROS_INFO("publishing topic %s.", publication->getTopic().c_str());
       //typename Publication<M>::shared_ptr output = static_cast< Publication<M>* >( pub.get() );
       typename Publication<M>::shared_ptr output = boost::static_pointer_cast< Publication<M> >(publication);
-      output->publish(message);
+      if(!output->publish(message))
+	    ROS_INFO("publish failed");
     }
     else 
     {

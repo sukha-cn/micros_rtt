@@ -39,6 +39,7 @@
 #ifndef MICROSRTT_MQSENDER_HPP_
 #define MICROSRTT_MQSENDER_HPP_
 
+#include <ros/ros.h>
 #include <mqueue.h>
 #include "micros_rtt/connection_base.hpp"
 #include "micros_rtt/oro/channel_element.hpp"
@@ -75,6 +76,7 @@ namespace micros_rtt
              * Its size is saved in max_size
              */
             char* buf;
+			char* sbuf;
             /**
              * True if this object is a sender.
              */
@@ -140,6 +142,7 @@ namespace micros_rtt
              * @return true if it could be sent.
              */
             bool mqWrite();
+			void setSBuf(char *pointer){sbuf = pointer;}
         };
 }
 

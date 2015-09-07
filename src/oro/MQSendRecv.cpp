@@ -68,7 +68,7 @@ void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
     mis_sender = is_sender;
 
     std::stringstream namestr;
-    namestr << '/' << connection->getTopic() << '.' << this << '@' << getpid();
+    namestr << '/' << connection->getTopic();
 
     struct mq_attr mattr;
     mattr.mq_maxmsg = data_size ? data_size : 10;
@@ -127,7 +127,7 @@ void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
     memset(buf, 0, max_size); // necessary to trick valgrind
     mqname = namestr.str();
     
-    ROS_INFO("Mqueue open name %s", mqname);
+    ROS_INFO("Mqueue open name %s", mqname.c_str());
 }
 
 MQSendRecv::~MQSendRecv()
@@ -232,9 +232,14 @@ bool MQSendRecv::mqRead()
     int bytes = 0;
     if ((bytes = mq_receive(mqdes, buf, max_size, 0)) == -1)
     {
-      //log(Debug) << "Tried read on empty mq!" <<endlog();
+      ROS_INFO( "Tried read on empty mq!");
       return false;
     }
+	else
+	{
+	  ROS_INFO("mq received");
+      return true;
+	}
 //    if (mtransport.updateFromBlob((void*) buf, bytes, ds, marshaller_cookie))
 //    {
 //        return true;
@@ -244,6 +249,7 @@ bool MQSendRecv::mqRead()
 
 bool MQSendRecv::mqWrite()
 {
+
 //    std::pair<void const*, int> blob = mtransport.fillBlob(ds, buf, max_size, marshaller_cookie);
 //    if (blob.first == 0)
 //    {
@@ -251,17 +257,23 @@ bool MQSendRecv::mqWrite()
 //        return false;
 //    }
 
-    char* lbuf;
-    //= (char*) blob.first;
+    char* lbuf = sbuf;
+    if (lbuf == NULL)
+		ROS_INFO("null lbuf");
     if (mq_send(mqdes, lbuf, max_size, 0) == -1)
     {
+ROS_INFO("mq send message");
+
         if (errno == EAGAIN)
+		{
+			ROS_INFO("EAGAIN");
             return true;
+		}
 
 //        log(Error) << "MQChannel "<< mqdes << " became invalid (mq length="<<max_size<<", msg length="<<blob.second<<"): " << strerror(errno) << endlog();
         return false;
     }
-    return true;
+        return true;
 }
 
 }

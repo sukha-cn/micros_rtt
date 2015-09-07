@@ -25,8 +25,17 @@ public:
   { 
     if(subscription)
     {
-      Subscription<M>* sub = static_cast< Subscription<M>* >(subscription.get ());
-      sub->call();
+	  ROS_INFO("have subscription %s", subscription->getTopic().c_str());
+	  if (subscription->isInterprocess())
+	  {
+        InterSubscription<M>* sub = static_cast< InterSubscription<M>* >(subscription.get ());
+        sub->call();
+	  }
+	  else
+	  {
+	    Subscription<M>* sub = static_cast< Subscription<M>*>(subscription.get());
+	    sub->call();
+	  }		  
     }
   }
   

@@ -20,8 +20,10 @@ public:
                 = boost::static_pointer_cast< ChannelElement<M> >(this->getChannelElement());
     if (output)
     {
-      output->write(message);
-      return true;
+      if (output->write(message))
+        return true;
+	  else
+	    return false;
     }
     else
     {
