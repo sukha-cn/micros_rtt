@@ -260,7 +260,7 @@ bool MQSendRecv::mqWrite()
     char* lbuf = sbuf;
     if (lbuf == NULL)
 		ROS_INFO("null lbuf");
-    if (mq_send(mqdes, lbuf, max_size, 0) == -1)
+    if (mq_send(mqdes, lbuf, 100, 0) == -1)
     {
 ROS_INFO("mq send message");
 
@@ -273,6 +273,7 @@ ROS_INFO("mq send message");
 //        log(Error) << "MQChannel "<< mqdes << " became invalid (mq length="<<max_size<<", msg length="<<blob.second<<"): " << strerror(errno) << endlog();
         return false;
     }
+	ROS_INFO("mq send successful");
         return true;
 }
 

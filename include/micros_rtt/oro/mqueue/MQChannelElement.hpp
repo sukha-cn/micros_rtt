@@ -42,6 +42,7 @@ namespace micros_rtt
        }
 
        virtual bool inputReady() {
+		   ROS_INFO("input ready");
            if ( mqReady(this) ) {
                typename ChannelElement<T>::shared_ptr output =
                    this->getOutput();

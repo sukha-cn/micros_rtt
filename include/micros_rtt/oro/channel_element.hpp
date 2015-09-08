@@ -88,7 +88,7 @@ public:
     }
     else
     {
-      return NoData;
+      return NewData;
     }
   }
 };

@@ -170,8 +170,8 @@ protected:
       if (!is_sender)
       {
         // the receiver needs a buffer to store his messages in.
-        ChannelElementBase::shared_ptr buf = buildDataStorage<T>();
-        mq->setOutput(buf);
+        //ChannelElementBase::shared_ptr buf = buildDataStorage<T>();
+        //mq->setOutput(buf);
       }
       return mq;
     }
