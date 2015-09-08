@@ -143,6 +143,7 @@ namespace micros_rtt
              */
             bool mqWrite();
 			void setSBuf(char *pointer){sbuf = pointer;}
+			char *getBuf(){return buf;}
         };
 }
 

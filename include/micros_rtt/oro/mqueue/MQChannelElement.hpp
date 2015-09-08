@@ -114,7 +114,10 @@ namespace micros_rtt
        {
 		   ROS_INFO("mqchannel read");
 		   if (mqRead())
+       {
+         sample = *getBuf();
 			   return NewData;
+    	 }
 		   return NoData;
        }
 
