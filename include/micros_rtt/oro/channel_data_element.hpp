@@ -1,10 +1,10 @@
-#ifndef ROSRTT_CHANNEL_DATA_ELEMENT_HPP
-#define ROSRTT_CHANNEL_DATA_ELEMENT_HPP
+#ifndef MICROSRTT_CHANNEL_DATA_ELEMENT_HPP
+#define MICROSRTT_CHANNEL_DATA_ELEMENT_HPP
 
 #include "channel_element.hpp"
 #include "data_lockfree.hpp"
 
-namespace hpcl_rtt 
+namespace micros_rtt 
 {    
   
 /** A connection element that stores a single data sample */

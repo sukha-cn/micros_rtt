@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(hpcl_rtt)
+project(micros_rtt)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -79,7 +79,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES hpcl_rtt
+  LIBRARIES micros_rtt
   CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
 )
@@ -97,12 +97,13 @@ include_directories(
 )
 
 ## Declare a cpp library
-add_library(hpcl_rtt
+add_library(micros_rtt
   src/node_handle.cpp
-  src/channel_elem_base.cpp
+  src/oro/channel_elem_base.cpp
   src/publisher.cpp
   src/subscriber.cpp
   src/topic_manager.cpp
+  src/oro/MQSendRecv.cpp
 )
 
 ## Declare a cpp executable

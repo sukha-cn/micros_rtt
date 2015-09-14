@@ -1,7 +1,7 @@
-#include "hpcl_rtt/topic_manager.h"
+#include "micros_rtt/topic_manager.h"
 
 
-namespace hpcl_rtt 
+namespace micros_rtt 
 {
 
 TopicManagerPtr g_topic_manager;
@@ -43,6 +43,27 @@ ConnectionBasePtr TopicManager::lookupPublication(const std::string& topic)
   }
 
   return t;
+}
+
+
+ConnectionBasePtr TopicManager::lookupSubscription(const std::string& topic)
+{
+  // spin through the subscriptions and see if we find a match. if so, use it.
+  ConnectionBasePtr sub;
+
+  {
+    for (V_ConnectionBase::iterator s = subscriptions_.begin();
+         s != subscriptions_.end(); ++s)
+    {
+      sub = *s;
+      if (sub->getTopic() == topic)
+      {
+        break;
+      }
+    }
+  }
+
+  return sub;
 }
 
 

@@ -1,5 +1,5 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package hpcl_rtt
+Changelog for package micros_rtt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 0.0.4 (2015-07-22)
