@@ -6,9 +6,6 @@
 #include "micros_rtt/connection_base.hpp"
 namespace micros_rtt
 {
-//class Publication;
-//typedef boost::shared_ptr<Publication> PublicationPtr;
-//typedef std::vector<PublicationPtr> V_Publication;
 
 template <class M>
 class Publication : public ConnectionBase
@@ -16,7 +13,7 @@ class Publication : public ConnectionBase
 public:
   typedef boost::shared_ptr< Publication<M> > shared_ptr;
   
-  Publication(const std::string& topic) : ConnectionBase(topic, false) {}
+  Publication(const std::string& topic) : ConnectionBase(topic) {}
   ~Publication() {}
 
   bool publish(M message)

@@ -26,47 +26,47 @@ public:
   ConnFactory() {}
   ~ConnFactory() {}
 
-  template<typename T>
-  static ChannelElementBase* buildDataStorage(const T& initial_value = T())
+  template<typename M>
+  static ChannelElementBase* buildDataStorage(const M& initial_value = M())
   {
-    typename DataObjectLockFree<T>::shared_ptr data_object;
-    data_object.reset( new DataObjectLockFree<T>(initial_value) );
-    ChannelDataElement<T>* result = new ChannelDataElement<T>(data_object);
+    typename DataObjectLockFree<M>::shared_ptr data_object;
+    data_object.reset( new DataObjectLockFree<M>(initial_value) );
+    ChannelDataElement<M>* result = new ChannelDataElement<M>(data_object);
     return result;
   }
 
-  template<typename T>
+  template<typename M>
   static ChannelElementBase::shared_ptr buildChannelInput(ConnectionBasePtr publication, ChannelElementBase::shared_ptr output_channel)
   {
-    ChannelElementBase::shared_ptr endpoint = new ConnInputEndpoint<T>(publication);
+    ChannelElementBase::shared_ptr endpoint = new ConnInputEndpoint<M>(publication);
     if (output_channel)
       endpoint->setOutput(output_channel);
     return endpoint;
   }
 
-  template<typename T>
+  template<typename M>
   static ChannelElementBase::shared_ptr buildChannelOutput(ConnectionBasePtr subscription)
   {
-    ChannelElementBase::shared_ptr endpoint = new ConnOutputEndpoint<T>(subscription);
+    ChannelElementBase::shared_ptr endpoint = new ConnOutputEndpoint<M>(subscription);
     return endpoint;
   }
   
-  template<typename T>
-  static ChannelElementBase::shared_ptr buildBufferedChannelOutput(ConnectionBasePtr subscription, T const& initial_value = T() )
+  template<typename M>
+  static ChannelElementBase::shared_ptr buildBufferedChannelOutput(ConnectionBasePtr subscription, M const& initial_value = M() )
   {
-    ChannelElementBase::shared_ptr endpoint = new ConnOutputEndpoint<T>(subscription);
-    ChannelElementBase::shared_ptr data_object = buildDataStorage<T>(initial_value);
+    ChannelElementBase::shared_ptr endpoint = new ConnOutputEndpoint<M>(subscription);
+    ChannelElementBase::shared_ptr data_object = buildDataStorage<M>(initial_value);
     data_object->setOutput(endpoint);
     return data_object;
   }
 
-  template<typename T>
+  template<typename M>
   static bool createConnection(ConnectionBasePtr publication, ConnectionBasePtr subscription)
   {
     // This is the input channel element of the output half
     ChannelElementBase::shared_ptr output_half = 0;
     // local ports, create buffer here.
-    output_half = buildBufferedChannelOutput<T>(subscription);
+    output_half = buildBufferedChannelOutput<M>(subscription);
 
     if (!output_half)
       return false;
@@ -74,49 +74,33 @@ public:
     // Since output is local, buildChannelInput is local as well.
     // This this the input channel element of the whole connection
     ChannelElementBase::shared_ptr channel_input =
-      buildChannelInput<T>(publication, output_half);
+      buildChannelInput<M>(publication, output_half);
 
     return createAndCheckConnection(publication, subscription, channel_input);
   }
 
-  template<class T>
+  template<class M>
   static bool createStream(ConnectionBasePtr connection, const std::string &topic, bool is_sender)
   {
     ChannelElementBase::shared_ptr chan;
     if (is_sender)
     {
       ROS_INFO("connection factory creating publication stream.");
-      chan = buildChannelInput<T>(connection, ChannelElementBase::shared_ptr() );
+      chan = buildChannelInput<M>(connection, ChannelElementBase::shared_ptr() );
     }
     else
     {
       ROS_INFO("connection factory creating subscription stream.");
-      chan = buildChannelOutput<T>(connection);
+      chan = buildChannelOutput<M>(connection);
     }
-    return createAndCheckStream<T>(connection, chan, is_sender);
+    return createAndCheckStream<M>(connection, chan, is_sender);
   }
 
 protected:
-  //template<typename T>
-  static bool createAndCheckConnection(ConnectionBasePtr publication, ConnectionBasePtr subscription, ChannelElementBase::shared_ptr channel_input)
-  {
-    // Register the channel's input to the output port.
-    if ( publication->addConnection(channel_input) ) 
-    {
-      // notify input that the connection is now complete.
-      
-      if ( channel_input->getOutputEndPoint()->inputReady() == false ) 
-      {
-        return false;
-      }
-      return true;
-    }
-    // setup failed.
-    channel_input->disconnect(true);
-    return false;
-  }
+  static bool createAndCheckConnection(ConnectionBasePtr publication, 
+          ConnectionBasePtr subscription, ChannelElementBase::shared_ptr channel_input);
 
-  template<typename T>
+  template<typename M>
   static bool createAndCheckStream(ConnectionBasePtr connection, ChannelElementBase::shared_ptr chan, bool is_sender) 
   {
     if (is_sender)
@@ -161,12 +145,12 @@ protected:
   }  
   
 
-  template<typename T>
+  template<typename M>
   static ChannelElementBase::shared_ptr createMqStream(ConnectionBasePtr connection, bool is_sender) 
   {
     try
     {
-      ChannelElementBase::shared_ptr mq = new MQChannelElement<T>(connection, is_sender);
+      ChannelElementBase::shared_ptr mq = new MQChannelElement<M>(connection, is_sender);
       if (!is_sender)
       {
         // the receiver needs a buffer to store his messages in.

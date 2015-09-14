@@ -1,8 +1,24 @@
 #include "oro/connection_factory.hpp"
 
-
 namespace micros_rtt
 {
+  
+static bool ConnFactory::createAndCheckConnection(ConnectionBasePtr publication, 
+          ConnectionBasePtr subscription, ChannelElementBase::shared_ptr channel_input)
+{
+  // Register the subscription to the publication.
+  if ( publication->addConnection(channel_input) ) 
+  {
+    // notify input that the connection is now complete.
+    if ( channel_input->getOutputEndPoint()->inputReady() == false ) 
+    {
+      return false;
+    }
+    return true;
+  }
+  // setup failed.
+  return false;
+}
 
 bool ConnFactory::createAndCheckStream(base::OutputPortInterface& output_port, ConnPolicy const& policy, base::ChannelElementBase::shared_ptr chan, StreamConnID* conn_id) {
     if (policy.transport == 0 ) {

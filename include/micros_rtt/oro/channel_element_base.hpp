@@ -31,9 +31,6 @@ private:
 
   shared_ptr input;
   shared_ptr output;
-
-  //There used to be a Mutex, waited to be fixed.
-  //RTT::os::Mutex inout_lock;
   
 protected:
   /** Increases the reference count */

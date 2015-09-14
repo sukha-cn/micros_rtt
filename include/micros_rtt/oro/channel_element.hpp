@@ -12,23 +12,23 @@ namespace micros_rtt
 /** A typed version of ChannelElementBase. It defines generic methods that are
  * type-specific (like write and read)
  */
-template<typename T>
+template<typename M>
 class ChannelElement : public ChannelElementBase
 {
 public:
-  typedef T value_t;
-  typedef boost::intrusive_ptr< ChannelElement<T> > shared_ptr;
-  typedef typename boost::call_traits<T>::param_type param_t;
-  typedef typename boost::call_traits<T>::reference reference_t;
+  typedef M value_t;
+  typedef boost::intrusive_ptr< ChannelElement<M> > shared_ptr;
+  typedef typename boost::call_traits<M>::param_type param_t;
+  typedef typename boost::call_traits<M>::reference reference_t;
 
   shared_ptr getOutput()
   {
-    return boost::static_pointer_cast< ChannelElement<T> >(ChannelElementBase::getOutput());
+    return boost::static_pointer_cast< ChannelElement<M> >(ChannelElementBase::getOutput());
   }
 
   shared_ptr getInput()
   {
-    return boost::static_pointer_cast< ChannelElement<T> >(ChannelElementBase::getInput());
+    return boost::static_pointer_cast< ChannelElement<M> >(ChannelElementBase::getInput());
   }
 
   /**
@@ -41,7 +41,7 @@ public:
    */
   virtual bool data_sample(param_t sample)
   {
-    typename ChannelElement<T>::shared_ptr output = boost::static_pointer_cast< ChannelElement<T> >(getOutput());
+    typename ChannelElement<M>::shared_ptr output = boost::static_pointer_cast< ChannelElement<M> >(getOutput());
     if (output)
     {
       return output->data_sample(sample);
