@@ -1,6 +1,5 @@
 #include "micros_rtt/topic_manager.h"
 
-
 namespace micros_rtt 
 {
 

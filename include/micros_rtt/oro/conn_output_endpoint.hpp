@@ -45,7 +45,6 @@ public:
    */
   bool inputReady()
   {
-    subscription_->addConnection(this);
     return ChannelElement<M>::inputReady();
   }
 

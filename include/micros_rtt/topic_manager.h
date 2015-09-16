@@ -3,10 +3,7 @@
 
 #include "ros/ros.h"
 #include "common.h"
-#include "micros_rtt/publication.h"
-#include "micros_rtt/subscription.h"
 #include "micros_rtt/connection_base.hpp"
-#include "micros_rtt/oro/connection_factory.hpp"
 
 namespace micros_rtt
 {

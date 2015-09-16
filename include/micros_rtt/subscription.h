@@ -1,9 +1,10 @@
 #ifndef MICROSRTT_SUBSCRIPTION_H
 #define MICROSRTT_SUBSCRIPTION_H
 
-#include "oro/channel_data_element.hpp"
-#include "boost/function.hpp"
 #include "connection_base.hpp"
+#include "micros/oro/channel_data_element.hpp"
+#include "boost/function.hpp"
+#include "ros/ros.h"
 
 namespace micros_rtt
 {  
@@ -25,10 +26,21 @@ public:
     callback = fp;
   }
   
-  bool channelReady( ChannelElementBase::shared_ptr end_port) 
+  bool channelReady( ChannelElementBase::shared_ptr channel) 
   {
-    if (end_port->inputReady ()) 
+    if (channel && channel->inputReady())
     {
+      addConnection(channel);
+      return true;
+    }
+    return false;
+  }
+  
+  bool mqChannelReady( ChannelElementBase::shared_ptr channel) 
+  {
+    if (channel && channel->inputReady())
+    {
+      addMQConnection(channel);
       return true;
     }
     return false;

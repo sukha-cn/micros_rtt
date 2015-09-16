@@ -87,7 +87,7 @@ public:
       TopicManager::instance()->addPubConnection(pub_connection);
         
       //create remote message queue for inter-process transport.
-      ConnFactory::createStream<M>(pub_connection, topic, true);
+      ConnFactory::createStream<M>(pub_connection, true);
 
       //check if local subscription exists and make the connection.
       ConnectionBasePtr local_sub = TopicManager::instance()->findSubConnection(topic);
@@ -158,7 +158,7 @@ if (handle)
       TopicManager::addSubConnection(sub_connection);
       
       //create remote message queue for inter-process transport.
-      ConnFactory::createStream<M>(sub_connection, topic, false);
+      ConnFactory::createStream<M>(sub_connection, false);
       
       //check if local subscription exists and make the connection.
       ConnectionBasePtr local_pub = TopicManager::instance()->findPubConnection(topic);
