@@ -10,29 +10,27 @@ namespace micros_rtt
 class Publisher 
 {
 public:
-  Publisher();
-  Publisher(ros::Publisher ros_publisher);
-  Publisher(ConnectionBasePtr pub_connection, ros::Publisher ros_publisher);
-  ~Publisher();
+  Publisher(){}
+  Publisher(ros::Publisher ros_publisher, ConnectionBasePtr pub_connection);
+  ~Publisher(){}
   
   template <class M>
   void publish(M message)
   {
     if (publication)
     {
-      //typename Publication<M>::shared_ptr output = static_cast< Publication<M>* >( pub.get() );
-      typename Publication<M>::shared_ptr output = boost::static_pointer_cast< Publication<M> >(publication);
+      typename Publication<M>::shared_ptr output = boost::static_pointer_cast< Publication<M> >(publication.get());
       if(!output->publish(message))
-        ROS_WARNING("publish failed");
+        ROS_WARNING("micros publish failed");
     }
     else 
     {
-      //ROS_INFO("ros publishing.");
-      ros_pub.publish<M>(message);
+      ROS_WARNING("micros publisher can't publish message with no connection.");
     }
-    
-    return;
+
   }
+  
+  ros::Publisher getRosPublisher() {return ros_pub;}
   
 private:
   ros::Publisher ros_pub;

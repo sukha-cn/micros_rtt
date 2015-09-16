@@ -97,7 +97,7 @@ public:
         ConnFactory::createConnection<M>(pub_connection, local_sub);
       }
       
-      Publisher pub(pub_connection, ros_pub);
+      Publisher pub(ros_pub, pub_connection);
       return pub;
     }
     else 
