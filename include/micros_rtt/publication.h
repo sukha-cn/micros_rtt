@@ -20,15 +20,22 @@ public:
   {
     typename ChannelElement<M>::shared_ptr output
                 = boost::static_pointer_cast< ChannelElement<M> >(this->getChannelElement());
-    if (output)
-    {
-      output->write(message);
-      return true;
-    }
-    else
+    typename ChannelElement<M>::shared_ptr mq_output
+                = boost::static_pointer_cast< ChannelElement<M> >(this->getMQChannelElement());
+    
+    if (!(mq_output || output))
     {
       return false;
     }
+    if (mq_output)
+    {
+      mq_output->write(message);
+    }
+    if (output)
+    {
+      output->write(message);
+    }
+    return true;
   }
 
   virtual bool channelReady(ChannelElementBase::shared_ptr channel) {return false;}

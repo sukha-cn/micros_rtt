@@ -38,7 +38,7 @@ bool ConnFactory::createAndCheckStream(ConnectionBasePtr connection,
   }
   else
   {
-    if ( connection->channelReady( chan->getOutputEndPoint() ) == true ) 
+    if ( connection->mqChannelReady( chan->getOutputEndPoint() ) == true ) 
     {
       ROS_DEBUG("micros connection factory adds output_end of stream to subscription:%s.", connection->getTopic().c_str());
       return true;

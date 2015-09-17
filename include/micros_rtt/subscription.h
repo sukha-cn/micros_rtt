@@ -51,6 +51,12 @@ public:
     FlowStatus result;
     M sample;
     typename ChannelElement<M>::shared_ptr input = static_cast< ChannelElement<M>* >( this->getChannelElement().get() );
+    typename ChannelElement<M>::shared_ptr mq_input = static_cast< ChannelElement<M>* >( this->getMQChannelElement().get() );
+    
+    if (!(mq_input || input))
+    {
+      return false;
+    }
     if ( input ) 
     {
       FlowStatus tresult = input->read(sample, false);
@@ -59,13 +65,26 @@ public:
       {
         result = tresult;
         callback(sample);
-        return true;
       }
       // stores OldData result
       if (tresult > result)
         result = tresult;
     }
-    return false;
+    
+    if ( mq_input ) 
+    {
+      FlowStatus tresult = input->read(sample, false);
+      // the result trickery is for not overwriting OldData with NoData.
+      if (tresult == NewData) 
+      {
+        result = tresult;
+        callback(sample);
+      }
+      // stores OldData result
+      if (tresult > result)
+        result = tresult;
+    }
+
   }
 private:
   boost::function<void(M)> callback;
