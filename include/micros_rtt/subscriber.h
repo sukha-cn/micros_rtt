@@ -8,8 +8,9 @@
 #ifndef MICROSRTT_SUBSCRIBER_HANDLE_H
 #define MICROSRTT_SUBSCRIBER_HANDLE_H
 
-#include "ros/subscriber.h"
+#include "ros/ros.h"
 #include "topic_manager.h"
+#include "subscription.h"
 
 namespace micros_rtt
 {

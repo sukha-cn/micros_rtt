@@ -51,7 +51,7 @@ public:
 
   virtual value_t data_sample()
   {
-    typename ChannelElement<T>::shared_ptr input = boost::static_pointer_cast< ChannelElement<T> >(getInput());
+    typename ChannelElement<M>::shared_ptr input = boost::static_pointer_cast< ChannelElement<M> >(getInput());
     if (input)
     {
       return input->data_sample();
@@ -66,7 +66,7 @@ public:
    */
   virtual bool write(param_t sample)
   {
-    typename ChannelElement<T>::shared_ptr output = boost::static_pointer_cast< ChannelElement<T> >(getOutput());
+    typename ChannelElement<M>::shared_ptr output = boost::static_pointer_cast< ChannelElement<M> >(getOutput());
     if (output)
     {
       return output->write(sample);
@@ -81,7 +81,7 @@ public:
    */
   virtual FlowStatus read(reference_t sample, bool copy_old_data)
   {
-    typename ChannelElement<T>::shared_ptr input = this->getInput();
+    typename ChannelElement<M>::shared_ptr input = this->getInput();
     if (input)
     {
       return input->read(sample, copy_old_data);

@@ -4,7 +4,7 @@
 #include "ros/ros.h"
 #include "channel_element.hpp"
 #include "mqueue/MQChannelElement.hpp"
-#include "micros/connection_base.hpp"
+#include "micros_rtt/connection_base.hpp"
 #include "conn_input_endpoint.hpp"
 #include "conn_output_endpoint.hpp"
 #include "data_lockfree.hpp"
@@ -68,8 +68,7 @@ public:
 
     if (!output_half)
     {
-      ROS_WARNING("micros connection factory fail to build 
-            buffered channel output of topic:%s.", publication->getTopic().c_str());
+      ROS_WARN("micros connection factory fail to build buffered channel output of topic:%s.", publication->getTopic().c_str());
       return false;
     }
 
@@ -77,8 +76,7 @@ public:
     // This this the input channel element of the whole connection
     ChannelElementBase::shared_ptr channel_input =
       buildChannelInput<M>(publication, output_half);
-    ROS_DEBUG("micros connection factory has build all channel elements topic:%s needed, 
-              ready to check the connection.", publication->getTopic().c_str());
+    ROS_DEBUG("micros connection factory has build all channel elements topic:%s needed, ready to check the connection.", publication->getTopic().c_str());
 
     return createAndCheckConnection(publication, subscription, channel_input);
   }
@@ -90,18 +88,17 @@ public:
     if (is_sender)
     {
       ROS_DEBUG("micros connection factory creating publication stream.");
-      chan_input = buildChannelInput<M>(connection, ChannelElementBase::shared_ptr() );
+      chan = buildChannelInput<M>(connection, ChannelElementBase::shared_ptr() );
         
       ChannelElementBase::shared_ptr chan_stream = createMqStream<M>(connection, true);
       if ( !chan_stream ) 
       {
-        ROS_WARNING("micros connection factory failed to create channel stream 
-                    for publication:%s", publication->getTopic().c_str());
+        ROS_WARN("micros connection factory failed to create channel stream  for publication:%s", connection->getTopic().c_str());
         return false;
       }
       
       chan->setOutput( chan_stream );
-      return createAndCheckStream<M>(connection, chan, true);
+      return createAndCheckStream(connection, chan, true);
     }
     else
     {
@@ -114,8 +111,7 @@ public:
       
       if ( !chan_stream ) 
       {
-        ROS_INFO("micros connection factory failed to create channel stream 
-                    for subscription:%s", subscription->getTopic().c_str());
+        ROS_WARN("micros connection factory failed to create channel stream for subscription:%s", connection->getTopic().c_str());
         return false;
       }
     
@@ -149,8 +145,7 @@ protected:
     }
     catch(std::exception& e)
     {
-      ROS_INFO("micros connection factory failed to create 
-                  MQueue Channel element for topic:%s", connection->getTopic().c_str());
+      ROS_INFO("micros connection factory failed to create MQueue Channel element for topic:%s", connection->getTopic().c_str());
     }
     return ChannelElementBase::shared_ptr();
   } 

@@ -1,8 +1,9 @@
 #ifndef MICROSRTT_PUBLISHER_HANDLE_H
 #define MICROSRTT_PUBLISHER_HANDLE_H
 
-#include "ros/publisher.h"
+#include "ros/ros.h"
 #include "topic_manager.h"
+#include "publication.h"
 
 namespace micros_rtt
 {
@@ -19,13 +20,13 @@ public:
   {
     if (publication)
     {
-      typename Publication<M>::shared_ptr output = boost::static_pointer_cast< Publication<M> >(publication.get());
+      typename Publication<M>::shared_ptr output = boost::static_pointer_cast< Publication<M> >(publication);
       if(!output->publish(message))
-        ROS_WARNING("micros publish failed");
+        ROS_WARN("micros publish failed");
     }
     else 
     {
-      ROS_WARNING("micros publisher can't publish message with no connection.");
+      ROS_WARN("micros publisher can't publish message with no connection.");
     }
 
   }

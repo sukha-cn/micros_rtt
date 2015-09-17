@@ -3,8 +3,8 @@
 
 #include "ros/serialization.h"
 #include "MQSendRecv.hpp"
-#include "micros/oro/channel_element.hpp"
-#include "micros/oro/data_lockfree.hpp"
+#include "micros_rtt/oro/channel_element.hpp"
+#include "micros_rtt/oro/data_lockfree.hpp"
 #include <stdexcept>
 
 namespace micros_rtt
@@ -127,9 +127,9 @@ public:
     //messages got from message queue need to be deserialize.
         
     SerializedMessage m;   
-    if (mqRead(&m))
+    if (mqRead(m))
     {
-      deserializeMessage(&m, sample)
+      deserializeMessage(m, sample);
       return NewData;
     }
     

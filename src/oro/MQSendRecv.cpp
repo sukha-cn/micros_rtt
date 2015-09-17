@@ -10,7 +10,6 @@
 
 #include "micros_rtt/common.h"
 #include "micros_rtt/oro/mqueue/MQSendRecv.hpp"
-#include "micros_rtt/oro/Time.hpp"
 
 
 namespace micros_rtt
@@ -51,44 +50,34 @@ void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
   if (mqdes < 0)
   {
     int the_error = errno;
-    ROS_WARNING("micros FAILED opening message queue %s with 
-        message size %d, buffer size %d.", mattr.mq_msgsize, mattr.mq_maxmsg);
+    ROS_WARN("micros FAILED opening message queue %s with message size %d, buffer size %d.", namestr.str().c_str(), (int)mattr.mq_msgsize, (int)mattr.mq_maxmsg);
     // these are copied from the man page. They are more informative than the plain perrno() text.
     switch (the_error)
     {
     case EACCES:
-        ROS_WARNING("The queue exists, but the caller does not have permission to open it in the specified mode.");
-        break;
+      ROS_WARN("The queue exists, but the caller does not have permission to open it in the specified mode.");
+      break;
     case EINVAL:
         // or the name is wrong...
-        lROS_WARNING("Wrong mqueue name given OR, In a process  that  is  unprivileged  
-                    (does  not  have  the CAP_SYS_RESOURCE  capability),  attr->mq_maxmsg  
-                    must be less than or equal to the msg_max limit, and attr->mq_msgsize 
-                    must be less than or equal to the msgsize_max limit.  In addition, 
-                    even in a privileged process, attr->mq_maxmsg cannot exceed the HARD_MAX limit.  
-                    (See mq_overview(7) for details of these limits.)";
-        break;
+      ROS_WARN("Wrong mqueue name given OR, In a process  that  is  unprivileged (does  not  have  the CAP_SYS_RESOURCE  capability),  attr->mq_maxmsg must be less than or equal to the msg_max limit, and attr->mq_msgsize must be less than or equal to the msgsize_max limit.  In addition, even in a privileged process, attr->mq_maxmsg cannot exceed the HARD_MAX limit. (See mq_overview(7) for details of these limits.");
+      break;
     case EMFILE:
-        ROS_WARNING("The process already has the maximum number of files and message queues open.");
-        break;
+      ROS_WARN("The process already has the maximum number of files and message queues open.");
+      break;
     case ENAMETOOLONG:
-        ROS_WARNING("Name was too long.");
-        break;
+      ROS_WARN("Name was too long.");
+      break;
     case ENFILE:
-        ROS_WARNING("The system limit on the total number of open files and message queues has been reached.");
-        break;
+      ROS_WARN("The system limit on the total number of open files and message queues has been reached.");
+      break;
     case ENOSPC:
-        ROS_WARNING( "Insufficient space for the creation of a new message queue.  
-                      This probably occurred because the queues_max limit was encountered; 
-                      see mq_overview(7).");
-
-        break;
+      ROS_WARN( "Insufficient space for the creation of a new message queue. This probably occurred because the queues_max limit was encountered; see mq_overview(7).");
+      break;
     case ENOMEM:
-        ROS_WARNING("Insufficient memory.");
-        break;
+      ROS_WARN("Insufficient memory.");
+      break;
     default:
-        ROS_WARNING("Submit a bug report. An unexpected mq error occured with errno=%h : %s"
-        , errno, strerror(errno));
+      ROS_WARN("Submit a bug report. An unexpected mq error occured with errno= %x : %s", errno, strerror(errno));
     }
     throw std::runtime_error("Could not open message queue: mq_open returned -1.");
   }
@@ -167,13 +156,13 @@ bool MQSendRecv::mqRead(SerializedMessage& m)
   int bytes = 0;
   if ((bytes = mq_receive(mqdes, buf, max_size, 0)) == -1)
   {
-    ROS_WARNING("micros message queue tried to read on empty mq!");
+    ROS_WARN("micros message queue tried to read on empty mq!");
     return false;
   }
 	else
 	{
 	  ROS_DEBUG("micros message queue received");
-	  m.buf->reset(buf);
+	  m.buf.reset((unsigned char *)buf);
 	  m.num_bytes = bytes;
     return true;
 	}
@@ -182,13 +171,13 @@ bool MQSendRecv::mqRead(SerializedMessage& m)
 bool MQSendRecv::mqWrite(SerializedMessage m)
 {
   if (!m.buf.get())
-	  ROS_WARNING("micros message queue write null buf");
-  if (mq_send(mqdes, m.buf.get(), (uint32_t)m.num_bytes, 0) == -1)
+	  ROS_WARN("micros message queue write null buf");
+  if (mq_send(mqdes, (char *)m.buf.get(), (uint32_t)m.num_bytes, 0) == -1)
   {
-    ROS_WARNING("micros message queue send error number:%h.", error);
+    //ROS_WARN("micros message queue send error number:%x.", errno);
     if (errno == EAGAIN)
 		{
-			ROS_WARNING("EAGAIN, message queue full.");
+			//ROS_WARN("EAGAIN, message queue full.");
       return true;
 		}
     return false;

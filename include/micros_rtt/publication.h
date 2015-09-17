@@ -1,8 +1,8 @@
 #ifndef MICROSRTT_PUBLICATION_H
 #define MICROSRTT_PUBLICATION_H
 
-#include "oro/channel_data_element.hpp"
 #include "ros/ros.h"
+#include "micros_rtt/oro/channel_data_element.hpp"
 #include "micros_rtt/connection_base.hpp"
 namespace micros_rtt
 {
@@ -30,6 +30,10 @@ public:
       return false;
     }
   }
+
+  virtual bool channelReady(ChannelElementBase::shared_ptr channel) {return false;}
+
+  virtual bool mqChannelReady(ChannelElementBase::shared_ptr channel) {return false;}
 
 };
 

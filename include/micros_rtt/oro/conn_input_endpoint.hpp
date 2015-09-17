@@ -26,7 +26,7 @@ public:
   /** Reads a new sample from this connection
    * This should never be called, as all connections are supposed to have
    * a data storage element */
-  virtual FlowStatus read(typename ChannelElement<T>::reference_t sample)
+  virtual FlowStatus read(typename ChannelElement<M>::reference_t sample)
   { return NoData; }
 
   virtual bool inputReady() 

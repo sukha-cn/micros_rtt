@@ -1,10 +1,10 @@
 #ifndef MICROSRTT_SUBSCRIPTION_H
 #define MICROSRTT_SUBSCRIPTION_H
 
-#include "connection_base.hpp"
-#include "micros/oro/channel_data_element.hpp"
-#include "boost/function.hpp"
 #include "ros/ros.h"
+#include "boost/function.hpp"
+#include "micros_rtt/connection_base.hpp"
+#include "micros_rtt/oro/channel_data_element.hpp"
 
 namespace micros_rtt
 {  

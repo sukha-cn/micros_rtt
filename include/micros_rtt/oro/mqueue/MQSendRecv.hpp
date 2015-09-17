@@ -9,8 +9,8 @@
 
 namespace micros_rtt
 {
-  
 using namespace ros::serialization;
+using ros::SerializedMessage;
 /**
  * Implements the sending/receiving of mqueue messages.
  * It can only be OR sender OR receiver (logical XOR).
@@ -31,7 +31,6 @@ protected:
    * Its size is saved in max_size
    */
   char* buf;
-  char* sbuf;
   /**
    * True if this object is a sender.
    */

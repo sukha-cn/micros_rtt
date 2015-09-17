@@ -5,6 +5,7 @@
 #include "publisher.h"
 #include "subscriber.h"
 #include "topic_manager.h"
+#include "micros_rtt/oro/connection_factory.hpp"
 
 namespace micros_rtt {
 
@@ -79,7 +80,7 @@ public:
     if (ros_pub) 
     {
       //topic get published in ros, do the advertise work in micros
-      ROS_INFO("micros has published topic %s on ros with %s.", topic, ros_pub.getTopic().c_str());
+      ROS_INFO("micros has published topic %s on ros with %s.", topic.c_str(), ros_pub.getTopic().c_str());
       
       //ros has done the necessary parameter check, so we know the topic is new.
       //and we know the subscribers (if there are) have the same data type.
@@ -102,7 +103,7 @@ public:
     }
     else 
     {
-      ROS_WARN("micros publishes topic %s on ros failed", topic);
+      ROS_WARN("micros publishes topic %s on ros failed", topic.c_str());
       return Publisher();
     }
   }
@@ -140,22 +141,21 @@ if (handle)
    *  \throws ConflictingSubscriptionException If this node is already subscribed to the same topic with a different datatype
    */
   template <class M>
-  Subscriber subscribe(const std::string &topic, uint32_t queue_size, void(*fp)(M),
-             const ros::TransportHints& transport_hints = ros::TransportHints())
+  Subscriber subscribe(const std::string &topic, uint32_t queue_size, void(*fp)(M), const ros::TransportHints& transport_hints = ros::TransportHints())
   {
     //try to subscribe the topic in ros, it will also make the necessary parameter check.
     //we don't use ros for transport, so register NULL.
-    ros::Subscriber ros_sub = ros_nh.subscribe(topic, queue_size, NULL, transport_hints);
+    ros::Subscriber ros_sub = ros_nh.subscribe<M>(topic, queue_size, NULL, transport_hints);
     
     if (ros_sub) 
     {
       //topic get subscribed in ros, do the subscribe work in micros
-      ROS_INFO("micros has subscribed topic %s on ros with %s.", topic, ros_sub.getTopic().c_str());
+      ROS_INFO("micros has subscribed topic %s on ros with %s.", topic.c_str(), ros_sub.getTopic().c_str());
 
       //ros has done the necessary parameter check, so we know the topic is new.
       //and we know the publisher (if there are) have the same data type.
-      ConnectionBasePtr sub_connection(new subscription(topic, fp));
-      TopicManager::addSubConnection(sub_connection);
+      ConnectionBasePtr sub_connection(new Subscription<M>(topic, fp));
+      TopicManager::instance()->addSubConnection(sub_connection);
       
       //create remote message queue for inter-process transport.
       ConnFactory::createStream<M>(sub_connection, false);
@@ -168,12 +168,12 @@ if (handle)
         ConnFactory::createConnection<M>(local_pub, sub_connection);
       }
       
-      Subscriber sub(sub_connection, ros_sub);
+      Subscriber sub(ros_sub, sub_connection);
       return sub;
     }
     else 
     {
-      ROS_WARN("micros subscribes topic %s on ros failed", topic);
+      ROS_WARN("micros subscribes topic %s on ros failed", topic.c_str());
       return Subscriber();
     }
 
