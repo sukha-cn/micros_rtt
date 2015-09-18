@@ -44,7 +44,7 @@ void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
   if (mis_sender)
       oflag |= O_WRONLY | O_NONBLOCK;
   else
-      oflag |= O_RDONLY| O_NONBLOCK;
+      oflag |= O_RDONLY;
   mqdes = mq_open(namestr.str().c_str(), oflag, S_IREAD | S_IWRITE, &mattr);
 
   if (mqdes < 0)
@@ -159,13 +159,13 @@ bool MQSendRecv::mqRead(SerializedMessage& m)
     ROS_WARN("micros message queue tried to read on empty mq!");
     return false;
   }
-	else
-	{
-	  ROS_DEBUG("micros message queue received");
-	  m.buf.reset((unsigned char *)buf);
-	  m.num_bytes = bytes;
+  else
+  {
+    ROS_DEBUG("micros message queue received");
+    m.buf.reset((unsigned char *)buf);
+    m.num_bytes = bytes;
     return true;
-	}
+  }
 }
 
 bool MQSendRecv::mqWrite(SerializedMessage m)
