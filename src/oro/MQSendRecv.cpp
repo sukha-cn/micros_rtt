@@ -44,7 +44,7 @@ void MQSendRecv::setupStream(ConnectionBasePtr connection, int data_size,
   if (mis_sender)
       oflag |= O_WRONLY | O_NONBLOCK;
   else
-      oflag |= O_RDONLY;
+      oflag |= O_RDONLY | O_NONBLOCK;
   mqdes = mq_open(namestr.str().c_str(), oflag, S_IREAD | S_IWRITE, &mattr);
 
   if (mqdes < 0)
@@ -98,6 +98,7 @@ MQSendRecv::~MQSendRecv()
 
 void MQSendRecv::cleanupStream()
 {
+  ROS_DEBUG("cleanupStream");
   if (!mis_sender)
   {
     if (minit_done)

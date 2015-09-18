@@ -58,19 +58,19 @@ public:
     {
       return false;
     }
-    if ( input ) 
-    {
-      FlowStatus tresult = input->read(sample, false);
-      // the result trickery is for not overwriting OldData with NoData.
-      if (tresult == NewData) 
-      {
-        result = tresult;
-        callback(sample);
-      }
-      // stores OldData result
-      if (tresult > result)
-        result = tresult;
-    }
+    //if ( input ) 
+    //{
+    //  FlowStatus tresult = input->read(sample, false);
+    //  // the result trickery is for not overwriting OldData with NoData.
+    //  if (tresult == NewData) 
+    //  {
+    //    result = tresult;
+    //    callback(sample);
+    //  }
+    //  // stores OldData result
+    //  if (tresult > result)
+    //    result = tresult;
+    //}
     
     if ( mq_input ) 
     {
@@ -85,6 +85,7 @@ public:
       if (tresult > result)
         result = tresult;
     }
+    return result;
 
   }
 private:
