@@ -129,7 +129,7 @@ public:
     SerializedMessage m;   
     if (mqRead(m))
     {
-      //deserializeMessage(m, sample);
+      deserializeMessage(m, sample);
       return NewData;
     }
     

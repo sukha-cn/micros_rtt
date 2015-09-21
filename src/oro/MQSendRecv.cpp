@@ -162,9 +162,10 @@ bool MQSendRecv::mqRead(SerializedMessage& m)
   }
   else
   {
-    ROS_DEBUG("micros message queue received");
+    ROS_DEBUG("micros message queue received %d bytes.", bytes);
     m.buf.reset((unsigned char *)buf);
     m.num_bytes = bytes;
+    m.message_start = ((unsigned char *)buf);
     return true;
   }
 }
