@@ -2,12 +2,13 @@
 Changelog for package micros_rtt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.0.5 (2015-09-21)
-------------------
+Forthcoming
+-----------
+
 * Add inter-process transport for local comunication.
 * optimize code structure.
 * fix exist bugs.
-* Contributors: sukha, sukha-cn
+* Contributors: sukha-cn
 
 0.0.4 (2015-07-22)
 ------------------
