@@ -80,7 +80,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES micros_rtt
-  CATKIN_DEPENDS roscpp
+  CATKIN_DEPENDS roscpp roscpp_serialization
 #  DEPENDS system_lib
 )
 
@@ -98,11 +98,11 @@ include_directories(
 
 ## Declare a cpp library
 add_library(micros_rtt
-  src/node_handle.cpp
-  src/oro/channel_elem_base.cpp
   src/publisher.cpp
   src/subscriber.cpp
   src/topic_manager.cpp
+  src/oro/channel_elem_base.cpp
+  src/oro/connection_factory.cpp
   src/oro/MQSendRecv.cpp
 )
 

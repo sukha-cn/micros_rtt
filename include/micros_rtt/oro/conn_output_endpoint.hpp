@@ -14,10 +14,10 @@ namespace micros_rtt
  * outputport. Imagine a spider attaching a thread at one wall and
  * moving along to the other side of the wall.
  */
-template<typename T>
-class ConnOutputEndpoint : public ChannelElement<T>
+template<typename M>
+class ConnOutputEndpoint : public ChannelElement<M>
 {
-  ConnectionBasePtr port;
+  ConnectionBasePtr subscription_;
 public:
   /**
    * Creates the connection end that represents the output and attach
@@ -27,10 +27,9 @@ public:
    * represents the other end. This id is passed to the input port \a port.
    * @return
    */
-  ConnOutputEndpoint(ConnectionBasePtr port)
-        : port(port)
+  ConnOutputEndpoint(ConnectionBasePtr subscription)
+        : subscription_(subscription)
   {
-    // cid is deleted/owned by the port's ConnectionManager.
   }
 
   ~ConnOutputEndpoint()
@@ -46,47 +45,31 @@ public:
    */
   bool inputReady()
   {
-    // cid is deleted/owned by the ConnectionManager.
-    port->addConnection(this);
-    return ChannelElement<T>::inputReady();
+    return ChannelElement<M>::inputReady();
   }
 
-  using ChannelElement<T>::write;
+  using ChannelElement<M>::write;
 
   /** Writes a new sample on this connection
    * This should never be called, as all connections are supposed to have
    * a data storage element */
-  virtual bool write(typename ChannelElement<T>::param_t sample)
+  virtual bool write(typename ChannelElement<M>::param_t sample)
   { return false; }
 
   virtual void disconnect(bool forward)
   {
-//    // Call the base class: it does the common cleanup
-//    base::ChannelElement<T>::disconnect(forward);
-//
-//    InputPort<T>* port = this->port;
-//    if (port && forward)
-//    {
-//      this->port = 0;
-//      port->removeConnection(cid);
-//    }
+    //temporary not supportted
   }
 
   virtual bool signal()
   {
-//    InputPort<T>* port = this->port;
-//#ifdef ORO_SIGNALLING_PORTS
-//    if (port && port->new_data_on_port_event)
-//      (*port->new_data_on_port_event)(port);
-//#else
-//    if (port )
-//      port->signal();
-//#endif
+    //temporary not supportted
     return true;
   }
 
-  virtual bool data_sample(typename ChannelElement<T>::param_t sample)
+  virtual bool data_sample(typename ChannelElement<M>::param_t sample)
   {
+    //data element has been initialized, this should be true
     return true;
   }
 

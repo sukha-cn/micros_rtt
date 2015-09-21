@@ -9,25 +9,24 @@ namespace micros_rtt
 /** This is a channel element that represents the input endpoint of a
  * connection, i.e. the part that is connected to the OutputPort
  */
-template<typename T>
-class ConnInputEndpoint : public ChannelElement<T>
+template<typename M>
+class ConnInputEndpoint : public ChannelElement<M>
 {
-  ConnectionBasePtr port;
+  ConnectionBasePtr publication_;
 
 public:
-  ConnInputEndpoint(ConnectionBasePtr port) : port(port) { }
+  ConnInputEndpoint(ConnectionBasePtr publication) : publication_(publication) { }
 
   ~ConnInputEndpoint()
   {
-    //this->disconnect(false); // inform port (if any) we're gone.
   }
 
-  using ChannelElement<T>::read;
+  using ChannelElement<M>::read;
 
   /** Reads a new sample from this connection
    * This should never be called, as all connections are supposed to have
    * a data storage element */
-  virtual FlowStatus read(typename ChannelElement<T>::reference_t sample)
+  virtual FlowStatus read(typename ChannelElement<M>::reference_t sample)
   { return NoData; }
 
   virtual bool inputReady() 
@@ -37,15 +36,7 @@ public:
 
   virtual void disconnect(bool forward)
   {
-      // Call the base class first
-//      base::ChannelElement<T>::disconnect(forward);
-//
-//      Publication<T>* port = this->port;
-//      if (port && !forward)
-//      {
-//        this->port   = 0;
-//        port->removeConnection();
-//      }
+    //temporary not supportted
   }
 };
 

@@ -2,26 +2,11 @@
 
 namespace micros_rtt
 {
-Publisher::Publisher()
-{
- 
-}
- 
-Publisher::Publisher(ros::Publisher ros_publisher)
-{
-  ros_pub = ros_publisher;
-}
 
-Publisher::Publisher(ConnectionBasePtr pub_connection, ros::Publisher ros_publisher)
+Publisher::Publisher(ros::Publisher ros_publisher, ConnectionBasePtr pub_connection)
 {
   publication = pub_connection;
   ros_pub = ros_publisher;
 }
-
-Publisher::~Publisher()
-{
- 
-}
-
 
 }

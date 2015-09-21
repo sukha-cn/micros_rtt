@@ -1,14 +1,11 @@
 #ifndef MICROSRTT_PUBLICATION_H
 #define MICROSRTT_PUBLICATION_H
 
-#include "oro/channel_data_element.hpp"
 #include "ros/ros.h"
+#include "micros_rtt/oro/channel_data_element.hpp"
 #include "micros_rtt/connection_base.hpp"
 namespace micros_rtt
 {
-//class Publication;
-//typedef boost::shared_ptr<Publication> PublicationPtr;
-//typedef std::vector<PublicationPtr> V_Publication;
 
 template <class M>
 class Publication : public ConnectionBase
@@ -16,23 +13,34 @@ class Publication : public ConnectionBase
 public:
   typedef boost::shared_ptr< Publication<M> > shared_ptr;
   
-  Publication(const std::string& topic) : ConnectionBase(topic, false) {}
+  Publication(const std::string& topic) : ConnectionBase(topic) {}
   ~Publication() {}
 
   bool publish(M message)
   {
     typename ChannelElement<M>::shared_ptr output
                 = boost::static_pointer_cast< ChannelElement<M> >(this->getChannelElement());
-    if (output)
-    {
-      output->write(message);
-      return true;
-    }
-    else
+    typename ChannelElement<M>::shared_ptr mq_output
+                = boost::static_pointer_cast< ChannelElement<M> >(this->getMQChannelElement());
+    
+    if (!(mq_output || output))
     {
       return false;
     }
+    if (mq_output)
+    {
+      mq_output->write(message);
+    }
+    if (output)
+    {
+      output->write(message);
+    }
+    return true;
   }
+
+  virtual bool channelReady(ChannelElementBase::shared_ptr channel) {return false;}
+
+  virtual bool mqChannelReady(ChannelElementBase::shared_ptr channel) {return false;}
 
 };
 

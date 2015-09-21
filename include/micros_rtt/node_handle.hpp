@@ -5,6 +5,7 @@
 #include "publisher.h"
 #include "subscriber.h"
 #include "topic_manager.h"
+#include "micros_rtt/oro/connection_factory.hpp"
 
 namespace micros_rtt {
 
@@ -79,41 +80,103 @@ public:
     if (ros_pub) 
     {
       //topic get published in ros, do the advertise work in micros
-      ROS_INFO("micros has published topic %s on ros with %s.", topic, ros_pub.getTopic().c_str());
+      ROS_INFO("micros has published topic %s on ros with %s.", topic.c_str(), ros_pub.getTopic().c_str());
       
-      ConnectionBasePtr pub_connection = TopicManager::instance()->advertise<M>(topic);
-      if (pub_connection)
+      //ros has done the necessary parameter check, so we know the topic is new.
+      //and we know the subscribers (if there are) have the same data type.
+      ConnectionBasePtr pub_connection(new Publication<M>(topic));
+      TopicManager::instance()->addPubConnection(pub_connection);
+        
+      //create remote message queue for inter-process transport.
+      ConnFactory::createStream<M>(pub_connection, true);
+
+      //check if local subscription exists and make the connection.
+      ConnectionBasePtr local_sub = TopicManager::instance()->findSubConnection(topic);
+      if (local_sub)
       {
-        Publisher pub(pub_connection, ros_pub);
-        return pub;
+        //make local connection
+        ConnFactory::createConnection<M>(pub_connection, local_sub);
       }
+      
+      Publisher pub(ros_pub, pub_connection);
+      return pub;
     }
     else 
     {
-      ROS_WARN("micros publishes topic %s on ros failed", topic);
+      ROS_WARN("micros publishes topic %s on ros failed", topic.c_str());
       return Publisher();
     }
   }
 
+  /**
+   * \brief Subscribe to a topic, version for bare function, compatible with ros
+   *
+   * The detail of this method will coming soon.
+   *
+   * This version of subscribe is a convenience function for using bare functions, and can be used like so:
+\verbatim
+void callback(const std_msgs::Empty::ConstPtr& message)
+{
+}
+
+ros::Subscriber sub = handle.subscribe("my_topic", 1, callback);
+\endverbatim
+   *
+   * \param M [template] M here is the callback parameter type (e.g. const boost::shared_ptr<M const>& or const M&), \b not the message type, and should almost always be deduced
+   * \param topic Topic to subscribe to
+   * \param queue_size Number of incoming messages to queue up for
+   * processing (messages in excess of this queue capacity will be
+   * discarded).
+   * \param fp Function pointer to call when a message has arrived
+   * \param transport_hints a TransportHints structure which defines various transport-related options
+   * \return On success, a Subscriber that, when all copies of it go out of scope, will unsubscribe from this topic.
+   * On failure, an empty Subscriber which can be checked with:
+\verbatim
+if (handle)
+{
+...
+}
+\endverbatim
+   *  \throws InvalidNameException If the topic name begins with a tilde, or is an otherwise invalid graph resource name
+   *  \throws ConflictingSubscriptionException If this node is already subscribed to the same topic with a different datatype
+   */
   template <class M>
-  Subscriber subscribe(const std::string &topic, uint32_t queue_size, void(*fp)(M),
-             const ros::TransportHints& transport_hints = ros::TransportHints(), bool is_interprocess = false)
+  Subscriber subscribe(const std::string &topic, uint32_t queue_size, void(*fp)(M), const ros::TransportHints& transport_hints = ros::TransportHints())
   {
-    // this will lead local messages to be double received, not resolved.
-    ros::Subscriber ros_sub = ros_nh.subscribe(topic, queue_size, fp, transport_hints);
+    //try to subscribe the topic in ros, it will also make the necessary parameter check.
+    //we don't use ros for transport, so register NULL.
+    ros::Subscriber ros_sub = ros_nh.subscribe<M>(topic, queue_size, NULL, transport_hints);
+    
     if (ros_sub) 
     {
-      ROS_INFO("ros subscribe successful.");
-      ConnectionBasePtr sub_connection = TopicManager::instance()->subscribe<M>(topic, fp, is_interprocess);
-      if (sub_connection)
+      //topic get subscribed in ros, do the subscribe work in micros
+      ROS_INFO("micros has subscribed topic %s on ros with %s.", topic.c_str(), ros_sub.getTopic().c_str());
+
+      //ros has done the necessary parameter check, so we know the topic is new.
+      //and we know the publisher (if there are) have the same data type.
+      ConnectionBasePtr sub_connection(new Subscription<M>(topic, fp));
+      TopicManager::instance()->addSubConnection(sub_connection);
+      
+      //create remote message queue for inter-process transport.
+      ConnFactory::createStream<M>(sub_connection, false);
+      
+      //check if local subscription exists and make the connection.
+      ConnectionBasePtr local_pub = TopicManager::instance()->findPubConnection(topic);
+      if (local_pub)
       {
-        ROS_INFO("subscribe successes.");
-        Subscriber sub(sub_connection, ros_sub);
-        return sub;
+        //make local connection
+        ConnFactory::createConnection<M>(local_pub, sub_connection);
       }
+      
+      Subscriber sub(ros_sub, sub_connection);
+      return sub;
+    }
+    else 
+    {
+      ROS_WARN("micros subscribes topic %s on ros failed", topic.c_str());
+      return Subscriber();
     }
 
-    return Subscriber();
   }
 
 private:

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>micros_rtt</name>
-  <version>0.0.4</version>
+  <version>0.0.6</version>
   <description>The micros_rtt package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
@@ -41,7 +41,10 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
+  <build_depend>roscpp_serialization</build_depend>
+  
   <run_depend>roscpp</run_depend>
+  <run_depend>roscpp_serialization</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
