@@ -176,15 +176,15 @@ bool MQSendRecv::mqWrite(SerializedMessage m)
 	  ROS_WARN("micros message queue write null buf");
   if (mq_send(mqdes, (char *)m.buf.get(), (uint32_t)m.num_bytes, 0) == -1)
   {
-    //ROS_WARN("micros message queue send error number:%x.", errno);
+    ROS_WARN("micros message queue send error number:%d.", errno);
     if (errno == EAGAIN)
 		{
-			//ROS_WARN("EAGAIN, message queue full.");
+			ROS_WARN("EAGAIN, message queue full.");
       return true;
 		}
     return false;
   }
-	ROS_DEBUG("micros message queue write successfully");
+	ROS_DEBUG("micros message queue write %d bytes successfully", m.num_bytes);
   return true;
 }
 
