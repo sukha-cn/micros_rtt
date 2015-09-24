@@ -2,8 +2,8 @@
 Changelog for package micros_rtt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-09-24)
+------------------
 * Contributors: sukha, sukha-cn
 
 0.0.5 (2015-09-21)
