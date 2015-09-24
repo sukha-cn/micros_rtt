@@ -95,7 +95,7 @@ public:
    * @param is_data_sample true if the sample is used for initialization, false if it is a proper write
    * @return true if it could be sent.
    */
-  bool mqWrite(SerializedMessage m);
+  bool mqWrite(SerializedMessage& m);
 };
 }
 

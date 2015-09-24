@@ -10,6 +10,7 @@
 
 #include "micros_rtt/common.h"
 #include "micros_rtt/oro/mqueue/MQSendRecv.hpp"
+#include "std_msgs/String.h"
 
 
 namespace micros_rtt
@@ -163,14 +164,15 @@ bool MQSendRecv::mqRead(SerializedMessage& m)
   else
   {
     ROS_DEBUG("micros message queue received %d bytes.", bytes);
-    m.buf.reset((unsigned char *)buf);
+    if (!m.buf)
+      m.buf.reset((unsigned char *)buf);
     m.num_bytes = bytes;
-    m.message_start = ((unsigned char *)buf);
+    m.message_start = ((unsigned char *)buf + 4);
     return true;
   }
 }
 
-bool MQSendRecv::mqWrite(SerializedMessage m)
+bool MQSendRecv::mqWrite(SerializedMessage& m)
 {
   if (!m.buf.get())
 	  ROS_WARN("micros message queue write null buf");
@@ -178,13 +180,13 @@ bool MQSendRecv::mqWrite(SerializedMessage m)
   {
     //ROS_WARN("micros message queue send error number:%x.", errno);
     if (errno == EAGAIN)
-		{
+    {
 			//ROS_WARN("EAGAIN, message queue full.");
       return true;
-		}
+    }
     return false;
   }
-	ROS_DEBUG("micros message queue write successfully");
+	ROS_DEBUG("micros message queue write successfully.");
   return true;
 }
 

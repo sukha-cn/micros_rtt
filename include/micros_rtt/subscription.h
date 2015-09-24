@@ -79,7 +79,7 @@ public:
       if (tresult == NewData) 
       {
         result = tresult;
-        //callback(sample);
+        callback(mq_sample);
       }
       // stores OldData result
       if (tresult > result)

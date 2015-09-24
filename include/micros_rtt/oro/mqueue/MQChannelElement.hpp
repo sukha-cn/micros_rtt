@@ -9,7 +9,7 @@
 
 namespace micros_rtt
 {
-  
+using namespace ros::serialization;
 /**
  * Implements the a ChannelElement using message queues.
  * It converts the C++ calls into MQ messages and vice versa.
@@ -25,6 +25,9 @@ class MQChannelElement: public ChannelElement<M>, public MQSendRecv
   typename DataObjectLockFree<M>::shared_ptr read_sample;
   /** Used in write() to refer to the sample that needs to be written */
   typename DataObjectLockFree<M>::shared_ptr write_sample;
+
+  
+  SerializedMessage read_m;   
 
 public:
   /**
@@ -122,14 +125,12 @@ public:
    */
   FlowStatus read(typename ChannelElement<M>::reference_t sample, bool copy_old_data)
   {
-    using namespace ros::serialization;
     ROS_DEBUG("micros message queue read.");
     //messages got from message queue need to be deserialize.
         
-    SerializedMessage m;   
-    if (mqRead(m))
+    if (mqRead(read_m))
     {
-      deserializeMessage(m, sample);
+      deserializeMessage<M>(read_m, sample);
       return NewData;
     }
     
@@ -144,9 +145,7 @@ public:
   bool write(typename ChannelElement<M>::param_t sample)
   {
     //messages sent through message queue need to be serialized first.
-    using namespace ros::serialization;
     SerializedMessage m = serializeMessage<M>(sample);
-     
     return mqWrite(m);
   }
 
