@@ -1,3 +1,22 @@
+/* 
+ *  mq_channel_element.cpp - micros message queue transport methods
+ *  Copyright (C) 2015 Zaile Jiang
+ *  
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <mqueue.h>
@@ -9,7 +28,7 @@
 #include <errno.h>
 
 #include "micros_rtt/common.h"
-#include "micros_rtt/oro/mqueue/MQSendRecv.hpp"
+#include "micros_rtt/oro/mq_send_recv.hpp"
 
 
 namespace micros_rtt
@@ -163,17 +182,18 @@ bool MQSendRecv::mqRead(SerializedMessage& m)
   else
   {
     ROS_DEBUG("micros message queue received %d bytes.", bytes);
-    m.buf.reset((unsigned char *)buf);
+    if (!m.buf)
+      m.buf.reset((unsigned char *)buf);
     m.num_bytes = bytes;
-    m.message_start = ((unsigned char *)buf);
+    m.message_start = ((unsigned char *)buf + 4);
     return true;
   }
 }
 
-bool MQSendRecv::mqWrite(SerializedMessage m)
+bool MQSendRecv::mqWrite(SerializedMessage& m)
 {
   if (!m.buf.get())
-	  ROS_WARN("micros message queue write null buf");
+    ROS_WARN("micros message queue write null buf");
   if (mq_send(mqdes, (char *)m.buf.get(), (uint32_t)m.num_bytes, 0) == -1)
   {
     ROS_WARN("micros message queue send error number:%d.", errno);
@@ -181,10 +201,10 @@ bool MQSendRecv::mqWrite(SerializedMessage m)
 		{
 			ROS_WARN("EAGAIN, message queue full.");
       return true;
-		}
+    }
     return false;
   }
-	ROS_DEBUG("micros message queue write %d bytes successfully", m.num_bytes);
+  ROS_DEBUG("micros message queue write successfully.");
   return true;
 }
 

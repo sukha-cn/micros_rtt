@@ -1,10 +1,28 @@
-#ifndef MICROSRTT_MQSENDER_HPP_
-#define MICROSRTT_MQSENDER_HPP_
+/* 
+ *  mq_channel_element.hpp - micros message queue transport methods
+ *  Copyright (C) 2015 Zaile Jiang
+ *  
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+#ifndef MICROSRTT_MQSENDRECV_HPP
+#define MICROSRTT_MQSENDRECV_HPP
 
 #include <ros/ros.h>
 #include <mqueue.h>
 #include "ros/serialization.h"
-#include "micros_rtt/connection_base.hpp"
+#include "micros_rtt/connection_base.h"
 #include "micros_rtt/oro/channel_element.hpp"
 
 namespace micros_rtt
@@ -95,7 +113,7 @@ public:
    * @param is_data_sample true if the sample is used for initialization, false if it is a proper write
    * @return true if it could be sent.
    */
-  bool mqWrite(SerializedMessage m);
+  bool mqWrite(SerializedMessage& m);
 };
 }
 

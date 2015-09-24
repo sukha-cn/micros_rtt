@@ -1,16 +1,28 @@
 /* 
- * File:   subscriber.h
- * Author: sukha-cn
- *
- * Created on May 28, 2015, 4:15 PM
- */
+ *  subscriber.h - micros topic subscriber
+ *  Copyright (C) 2015 Zaile Jiang
+ *  
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
 
 #ifndef MICROSRTT_SUBSCRIBER_HANDLE_H
 #define MICROSRTT_SUBSCRIBER_HANDLE_H
 
 #include "ros/ros.h"
-#include "topic_manager.h"
-#include "subscription.h"
+#include "micros_rtt/topic_manager.h"
+#include "micros_rtt/subscription.hpp"
 
 namespace micros_rtt
 {
