@@ -103,7 +103,7 @@ add_library(micros_rtt
   src/topic_manager.cpp
   src/oro/channel_elem_base.cpp
   src/oro/connection_factory.cpp
-  src/oro/MQSendRecv.cpp
+  src/oro/mq_send_recv.cpp
 )
 
 ## Declare a cpp executable
