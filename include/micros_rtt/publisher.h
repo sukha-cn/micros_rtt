@@ -21,7 +21,7 @@
 
 #include "ros/ros.h"
 #include "micros_rtt/topic_manager.h"
-#include "micros_rtt/publication.h"
+#include "micros_rtt/publication.hpp"
 
 namespace micros_rtt
 {

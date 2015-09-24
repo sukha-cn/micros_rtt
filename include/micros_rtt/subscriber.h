@@ -22,7 +22,7 @@
 
 #include "ros/ros.h"
 #include "micros_rtt/topic_manager.h"
-#include "micros_rtt/subscription.h"
+#include "micros_rtt/subscription.hpp"
 
 namespace micros_rtt
 {
