@@ -198,8 +198,8 @@ bool MQSendRecv::mqWrite(SerializedMessage& m)
   {
     ROS_WARN("micros message queue send error number:%d.", errno);
     if (errno == EAGAIN)
-    {
-      ROS_WARN("EAGAIN, message queue full.");
+		{
+			ROS_WARN("EAGAIN, message queue full.");
       return true;
     }
     return false;
