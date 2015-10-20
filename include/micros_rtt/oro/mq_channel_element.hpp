@@ -45,7 +45,8 @@ class MQChannelElement: public ChannelElement<M>, public MQSendRecv
   typename DataObjectLockFree<M>::shared_ptr write_sample;
 
   
-  SerializedMessage read_m;   
+  SerializedMessage read_m;
+  SerializedMessage write_m;
 
 public:
   /**
@@ -163,8 +164,17 @@ public:
   bool write(typename ChannelElement<M>::param_t sample)
   {
     //messages sent through message queue need to be serialized first.
-    SerializedMessage m = serializeMessage<M>(sample);
-    return mqWrite(m);
+    uint32_t len = serializationLength(sample);
+    write_m.num_bytes = len + 4;
+    if (write_m.buf == NULL)
+      write_m.buf.reset(new uint8_t[m.num_bytes]);
+  
+    OStream s(write_m.buf.get(), (uint32_t)write_m.num_bytes);
+    serialize(s, (uint32_t)write_m.num_bytes - 4);
+    write_m.message_start = s.getData();
+    serialize(s, sample);
+
+    return mqWrite(write_m);
   }
 
 };
