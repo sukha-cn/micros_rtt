@@ -176,7 +176,6 @@ public:
 
     return mqWrite(write_m);
   }
-
 };
 
 }
