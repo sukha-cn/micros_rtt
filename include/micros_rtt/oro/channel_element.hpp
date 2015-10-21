@@ -26,7 +26,6 @@
 
 namespace micros_rtt 
 {   
-
 /** A typed version of ChannelElementBase. It defines generic methods that are
  * type-specific (like write and read)
  */
