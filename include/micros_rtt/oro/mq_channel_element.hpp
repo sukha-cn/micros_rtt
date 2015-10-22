@@ -167,7 +167,7 @@ public:
     uint32_t len = serializationLength(sample);
     write_m.num_bytes = len + 4;
     if (write_m.buf == NULL)
-      write_m.buf.reset(new uint8_t[m.num_bytes]);
+      write_m.buf.reset(new uint8_t[write_m.num_bytes]);
   
     OStream s(write_m.buf.get(), (uint32_t)write_m.num_bytes);
     serialize(s, (uint32_t)write_m.num_bytes - 4);
