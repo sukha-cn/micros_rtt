@@ -21,6 +21,7 @@
 #define MICROSRTT_NODE_HANDLE_HPP
 
 #include "ros/node_handle.h"
+#include "ros/message_traits.h"
 #include "micros_rtt/publisher.h"
 #include "micros_rtt/subscriber.h"
 #include "micros_rtt/topic_manager.h"
@@ -34,7 +35,7 @@ public:
   NodeHandle(const std::string& ns = std::string(), const ros::M_string& remappings = ros::M_string())
   {
     //get ros node handle first
-    ros_nh = ros::NodeHandle(ns, remappings);
+    ros_nh_ = ros::NodeHandle(ns, remappings);
     //maybe need other initialization later
     
   }
@@ -44,26 +45,11 @@ public:
   }
 
   //ros node handle method, leave for compatibility
-  void setCallbackQueue(ros::CallbackQueueInterface* queue)
-  {
-    ros_nh.setCallbackQueue(queue);
-  }
-  ros::CallbackQueueInterface* getCallbackQueue() const
-  {
-    return ros_nh.getCallbackQueue();
-  }
-  const std::string& getNamespace() const 
-  {
-    return ros_nh.getNamespace();
-  }
-  const std::string& getUnresolvedNamespace()
-  {
-    return ros_nh.getUnresolvedNamespace();
-  }
-  std::string resolveName(const std::string& name, bool remap = true) const
-  {
-    return ros_nh.getUnresolvedNamespace();
-  }
+  void setCallbackQueue(ros::CallbackQueueInterface* queue);
+  ros::CallbackQueueInterface* getCallbackQueue() const;
+  const std::string& getNamespace() const ;
+  const std::string& getUnresolvedNamespace();
+  std::string resolveName(const std::string& name, bool remap = true) const;
 
 
   //micros node handle method from here
@@ -93,8 +79,13 @@ public:
   template <class M>
   Publisher advertise(const std::string& topic, uint32_t queue_size, bool latch = false)
   {
-    //try to publish the topic in ros first, it will also make the necessary parameter check.
-    ros::Publisher ros_pub = ros_nh.advertise<M>(topic, queue_size, latch);
+    // resolveName in ros namespace
+    const std::string real_topic = resolveName(topic);
+    // resolve datatype
+    const std::string data_type = ros::message_traits::datatype<M>();
+
+    // try to publish the topic in ros first, it will also make the necessary parameter check.
+    ros::Publisher ros_pub = ros_nh_.advertise<M>(topic, queue_size, latch);
 
     if (ros_pub) 
     {
@@ -164,7 +155,7 @@ if (handle)
   {
     //try to subscribe the topic in ros, it will also make the necessary parameter check.
     //we don't use ros for transport, so register NULL.
-    ros::Subscriber ros_sub = ros_nh.subscribe<M>(topic, queue_size, NULL, transport_hints);
+    ros::Subscriber ros_sub = ros_nh_.subscribe<M>(topic, queue_size, NULL, transport_hints);
     
     if (ros_sub) 
     {
@@ -199,7 +190,7 @@ if (handle)
   }
 
 private:
-  ros::NodeHandle ros_nh;
+  ros::NodeHandle ros_nh_;
 
 };
 

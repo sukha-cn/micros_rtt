@@ -38,12 +38,36 @@ const TopicManagerPtr& TopicManager::instance()
 
 TopicManager::TopicManager()
 {
+  xmlrpc_manager_ = ros::XMLRPCManager::instance();
+
+  ROS_WARN("Bind my own pubUpdateCallback");
+  xmlrpc_manager_->unbind("publisherUpdate");
+  xmlrpc_manager_->bind("publisherUpdate", boost::bind(&TopicManager::pubUpdateCallback, this, _1, _2));
+  xmlrpc_manager_->unbind("requestTopic");
+  xmlrpc_manager_->bind("requestTopic", boost::bind(&TopicManager::pubUpdateCallback, this, _1, _2));
 }
 
 TopicManager::~TopicManager()
 {
 }
 
+bool TopicManager::advertise(const std::string& topic, const std::string& data_type, uint32_t queue_size)
+{
+  if (data_type == "*")
+  {
+    std::stringstream ss;
+    ss << "Advertising with * as the datatype is not allowed.  Topic [" << topic << "]";
+  }
+
+  XmlRpc::XmlRpcValue args, result, payload;
+  args[0] = ros::this_node::getName();
+  args[1] = topic;
+  args[2] = data_type;
+  args[3] = xmlrpc_manager_->getServerURI();
+  ros::master::execute("registerPublisher", args, result, payload, true);
+
+  return true;
+}
 
 void TopicManager::addPubConnection(ConnectionBasePtr pub_connection)
 {
@@ -92,6 +116,17 @@ ConnectionBasePtr TopicManager::findPubConnection(const std::string& topic)
   return pub;
 }
 
+
+void TopicManager::pubUpdateCallback(XmlRpc::XmlRpcValue& params, XmlRpc::XmlRpcValue& result)
+{
+  ROS_WARN("Bind my own pubUpdateCallback");
+}
+
+void TopicManager::requestTopicCallback(XmlRpc::XmlRpcValue& params, XmlRpc::XmlRpcValue& result)
+{
+  //create remote message queue for inter-process transport.
+  ConnFactory::createStream<M>(pub_connection, true);
+}
 
 }
 

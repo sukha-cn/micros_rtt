@@ -6,6 +6,8 @@ project(micros_rtt)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  roscpp_traits
+  xmlrpcpp
 )
 
 ## System dependencies are found with CMake's conventions
@@ -80,7 +82,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES micros_rtt
-  CATKIN_DEPENDS roscpp roscpp_serialization
+  CATKIN_DEPENDS roscpp roscpp_serialization roscpp_traits xmlrpcpp
 #  DEPENDS system_lib
 )
 
@@ -101,6 +103,7 @@ add_library(micros_rtt
   src/publisher.cpp
   src/subscriber.cpp
   src/topic_manager.cpp
+  src/node_handle.cpp
   src/oro/channel_elem_base.cpp
   src/oro/connection_factory.cpp
   src/oro/mq_send_recv.cpp

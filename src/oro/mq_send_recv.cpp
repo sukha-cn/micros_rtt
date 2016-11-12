@@ -176,7 +176,7 @@ bool MQSendRecv::mqRead(SerializedMessage& m)
   int bytes = 0;
   if ((bytes = mq_receive(mqdes, buf, max_size, 0)) == -1)
   {
-    ROS_WARN("micros message queue tried to read on empty mq!");
+    //ROS_WARN("micros message queue tried to read on empty mq!");
     return false;
   }
   else
